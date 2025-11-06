@@ -1,0 +1,23 @@
+Task: Translate the following JSON proof into a formal version in Lean or Isabelle style.
+
+Rules:
+- Return ONLY valid JSON.
+- For each step, include a new key "formal_code" with the formal translation.
+- Preserve logical dependencies.
+- Do not include comments outside JSON.
+
+Proof (JSON):
+{PROOF_JSON}
+
+Answer (JSON format):
+{
+  "formal_proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "...",
+      "formal_code": "assume ...",
+      "depends_on": []
+    }
+  ]
+}

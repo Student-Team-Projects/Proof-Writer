@@ -1,0 +1,10 @@
+Role: You are a precise translator of natural language into basic formal logic (Lean/Isabelle style).
+Task: Translate the following numbered natural language proof into a formal language, preserving the step numbering.
+Rules:
+* Use a minimalist set of formal constructs (assume, have, thus, show, etc.) and basic logical symbols.
+* DO NOT introduce any new implications or assumptions not explicitly in the proof text.
+* Crucial: Preserve the step-by-step structure of the proof, marking each formal step with its corresponding numbering.
+* Avoid Lean/Isabelle specific libraries – focus on pure logical formalization.
+Natural language proof:
+{PROOF_HERE}
+Answer (formal version, preserving numbering):

@@ -1,0 +1,9 @@
+Let H_n be n-th Harmonic number, that is H_n := sum_{i=1}^n 1/i. Prove that for n>=1 the following holds: sum_{i=1}^n H_n = (n+1)*H_n - n.
+
+Prove that every group has unique neutral element.
+
+You're given generating function $$ C(X) = \frac{12}{7} \frac{1}{(1-x)^2} \ln{\frac{1}{1-x}} - \frac{54}{49} \frac{1}{(1-x)^2} + \frac{6}{5} - \frac{24}{245}(1-x)^2 $$. 
+Prove that the formula for $$ C_n = \frac{12}{7}(n+1)(H_{n+1}-\frac{23}{14}).
+
+Prove that for every $a,b \in \mathbb{Z}$ and for every prime number $p\ge 5$ holds the following:
+    \[ \binom{pa}{pb} \equiv \binom{a}{b} mod p^3 \]

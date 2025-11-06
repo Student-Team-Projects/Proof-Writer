@@ -1,0 +1,95 @@
+Role: You are an expert logician and mathematician. Your task is to produce a complete, elementary, and fully rigorous proof of the given statement in natural English, expressed in **valid JSON format**.  
+All mathematical expressions must be written in **LaTeX** syntax (within `$...$`).
+
+GOAL:
+Write a logically correct proof for the statement below, with the reasoning decomposed into the smallest necessary inferential units.  
+The proof must be concise (no redundant steps, no repetitions, no circular reasoning) yet fully explicit — every inference must be justified from previous steps, definitions, or axioms.
+
+=== STRUCTURE (STRICT JSON SCHEMA) ===
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step" or "lemma",
+      "statement": "precise claim written in natural English with LaTeX for math",
+      "justification": "explicit, local reason referencing earlier steps, axioms, or definitions",
+      "depends_on": [list of integers; may be empty]
+    },
+    ...
+  ],
+  "conclusion": "final statement proven (must match the original statement)"
+}
+
+=== RULES ===
+1. **Format and syntax**
+   - Output must be **valid JSON only** (no text outside JSON).
+   - Every formula or mathematical expression must be enclosed in `$...$` using proper LaTeX syntax.
+
+2. **Logical rigor**
+   - Each "statement" must contain **only one logical move** (no multi-step jumps).
+   - Each "justification" must refer explicitly to:
+     - earlier step IDs (from `depends_on`),
+     - or a known logical rule (e.g., *modus ponens*, *reflexivity of equality*, *definition of addition*, etc.),
+     - or a direct definitional fact.
+   - Never use vague justifications like “obvious”, “clear”, or “follows directly”.
+   - Never refer to the statement being proved as a justification.
+
+3. **Simplicity and minimality**
+   - Avoid redundant or circular steps — include only what is logically required.
+   - Do not introduce unnecessary lemmas, restatements, or re-derivations.
+   - If the statement is extremely simple (e.g. `$0 = 0$`), the proof must still include at least one explicit reasoning step (e.g. “by reflexivity of equality”).
+
+4. **Dependencies**
+   - Each `depends_on` list must reference only earlier IDs.
+   - No forward references or cyclic dependencies.
+
+5. **Structure of reasoning**
+   - If the proof uses induction, include separate steps for:
+     - base case,
+     - inductive hypothesis,
+     - inductive step (explicitly invoking the hypothesis).
+   - If using contradiction, include:
+     - the assumption of the negation,
+     - the derivation of contradiction,
+     - the discharge of the assumption.
+
+6. **Permitted inference rules** (examples, not exhaustive):
+   - Reflexivity, symmetry, and transitivity of equality.
+   - Substitution of equals for equals.
+   - Logical implication (modus ponens).
+   - Definition-based rewriting.
+   - Universal/existential instantiation or introduction.
+   - Arithmetic and set-theoretic axioms (as appropriate).
+
+7. **Conclusion**
+   - The last step of the proof must have a statement logically equivalent to the given `{STATEMENT_HERE}`.
+   - The `"conclusion"` field must repeat this statement exactly.
+
+8. **If proof is not derivable** (under standard first-order logic with basic axioms), return:
+   {
+     "proof": [],
+     "conclusion": "",
+     "error": "Cannot prove: <brief reason>"
+   }
+
+=== TEMPLATE OUTPUT ===
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "...",
+      "justification": "...",
+      "depends_on": []
+    }
+  ],
+  "conclusion": "..."
+}
+
+=== STATEMENT ===
+{STATEMENT_HERE}
+
+=== ANSWER INSTRUCTIONS ===
+Return only the JSON proof following the schema above.  
+Use LaTeX for all formulas.  
+Keep reasoning minimal, precise, and logically sequential.
