@@ -1,0 +1,2 @@
+Prove that for every $a,b \in \mathbb{Z}$ and for every prime number $p\ge 5$ holds the following:
+    \[ \binom{pa}{pb} \equiv \binom{a}{b} mod p^3 \]
