@@ -2,7 +2,7 @@
 
 import MainAgent.MainAgent as ma
 import os
-
+import logging
 
 path = "../../statements/statement2.txt"
 
@@ -13,5 +13,5 @@ with open(path, "r", encoding="utf-8") as f:
     statement = f.read()
 
 model = ma.MainAgent()
-
-model.solve(statement)
+logging.basicConfig(level=logging.INFO)
+print(model.solve(statement))

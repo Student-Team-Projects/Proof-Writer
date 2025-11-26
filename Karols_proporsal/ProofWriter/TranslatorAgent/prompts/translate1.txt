@@ -1,0 +1,15 @@
+Task: Rewrite the given proof, which is provided in separate steps, into a coherent, natural-flowing text.
+
+Rules:
+- Use **$...$** for inline mathematical expressions instead of \( ... \).
+- Use normal enter instead of \n or \n\n
+- Do not use \n, \(, or \) anywhere in the proof.
+- Do not include any explanations, comments, or text outside the JSON object. Any output outside JSON will be considered incorrect.
+
+Input:
+Statement:
+{STATEMENT_HERE}
+
+Proof (step-by-step):
+{PROOF_HERE}
+

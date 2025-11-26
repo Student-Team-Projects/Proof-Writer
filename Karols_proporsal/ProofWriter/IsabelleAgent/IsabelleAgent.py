@@ -62,17 +62,6 @@ class IsabelleAgent:
         # theory_name = f"Auto_{uuid.uuid4().hex[:8]}"
         theory_name = "Isabelleproof"
 
-#         if not proof_string.strip().startswith("theory"):
-#             proof_string = f"""
-# theory {theory_name}
-# imports Main
-# begin
-
-# {proof_string}
-
-# end
-# """
-
         self._write_files(theory_name, proof_string)
         ok, errors = self._run_isabelle()
 
@@ -85,40 +74,40 @@ class IsabelleAgent:
 
 
 # example of use
-agent = IsabelleAgent()
+# agent = IsabelleAgent()
 
-proof = """
+# proof = """
 
-theory Isabelleproof
-imports Main
-begin
+# theory Isabelleproof
+# imports Main
+# begin
 
-locale group =
-  fixes mul (infixl "\<otimes>" 70)
-    and e :: "'a"
-    and inv :: "'a => 'a"
-  assumes assoc: "(x \<otimes> y) \<otimes> z = x \<otimes> (y \<otimes> z)"
-    and left_neutral: "e \<otimes> x = x"
-    and left_inverse: "inv x \<otimes> x = e"
-begin
+# locale group =
+#   fixes mul (infixl "\<otimes>" 70)
+#     and e :: "'a"
+#     and inv :: "'a => 'a"
+#   assumes assoc: "(x \<otimes> y) \<otimes> z = x \<otimes> (y \<otimes> z)"
+#     and left_neutral: "e \<otimes> x = x"
+#     and left_inverse: "inv x \<otimes> x = e"
+# begin
 
-lemma identity_unique:
-  assumes neutral_e': "\<forall>x. e' \<otimes> x = x"
-  assumes neutral_e:  "\<forall>x. e \<otimes> x = x"
-  shows "e' = e"
-proof -
-  have "e' = e' \<otimes> e" using neutral_e[rule_format] by simp
-  also have "... = e" using neutral_e'[rule_format] by simp
-  finally show ?thesis .
-qed
+# lemma identity_unique:
+#   assumes neutral_e': "\<forall>x. e' \<otimes> x = x"
+#   assumes neutral_e:  "\<forall>x. e \<otimes> x = x"
+#   shows "e' = e"
+# proof -
+#   have "e' = e' \<otimes> e" using neutral_e[rule_format] by simp
+#   also have "... = e" using neutral_e'[rule_format] by simp
+#   finally show ?thesis .
+# qed
 
-end
+# end
 
-end
+# end
 
 
 
-"""
-odp = agent.check(proof)
-for e in odp['errors']:
-    print(e)
+# """
+# odp = agent.check(proof)
+# for e in odp['errors']:
+#     print(e)
