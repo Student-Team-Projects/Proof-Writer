@@ -1,0 +1,1 @@
+Let H_n be n-th Harmonic number, that is H_n := sum_{i=1}^n 1/i. Prove that for n>=1 the following holds: sum_{i=1}^n H_n = (n+1)*H_n - n.

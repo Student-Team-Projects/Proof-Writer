@@ -5,6 +5,7 @@ import re
 import os
 import uuid
 import shutil
+import json
 
 class IsabelleAgent:
     def __init__(self, workspace="isabelle_workspace"):
@@ -41,7 +42,9 @@ class IsabelleAgent:
 
         # Wyłuskanie błędów
         error_pattern = re.compile(r"\*\*\*|Error|error|FAILED|Undefined|Unknown|Malformed", re.IGNORECASE)
-        errors = [line for line in result.stderr.splitlines() if error_pattern.search(line)]
+        all_output = result.stdout.splitlines() + result.stderr.splitlines()
+        errors = [line for line in all_output if error_pattern.search(line)]
+
 
         return (result.returncode == 0, errors)
 
@@ -56,18 +59,19 @@ class IsabelleAgent:
         # Czyścimy workspace przed użyciem
         self._reset_workspace()
 
-        theory_name = f"Auto_{uuid.uuid4().hex[:8]}"
+        # theory_name = f"Auto_{uuid.uuid4().hex[:8]}"
+        theory_name = "Isabelleproof"
 
-        if not proof_string.strip().startswith("theory"):
-            proof_string = f"""
-theory {theory_name}
-imports Main
-begin
+#         if not proof_string.strip().startswith("theory"):
+#             proof_string = f"""
+# theory {theory_name}
+# imports Main
+# begin
 
-{proof_string}
+# {proof_string}
 
-end
-"""
+# end
+# """
 
         self._write_files(theory_name, proof_string)
         ok, errors = self._run_isabelle()
@@ -81,11 +85,40 @@ end
 
 
 # example of use
-# agent = IsabelleAgent()
+agent = IsabelleAgent()
 
-# proof = """
-# lemma "1 + 1 = 2"
-#   by simp
-# """
+proof = """
 
-# print(agent.check(proof))
+theory Isabelleproof
+imports Main
+begin
+
+locale group =
+  fixes mul (infixl "\<otimes>" 70)
+    and e :: "'a"
+    and inv :: "'a => 'a"
+  assumes assoc: "(x \<otimes> y) \<otimes> z = x \<otimes> (y \<otimes> z)"
+    and left_neutral: "e \<otimes> x = x"
+    and left_inverse: "inv x \<otimes> x = e"
+begin
+
+lemma identity_unique:
+  assumes neutral_e': "\<forall>x. e' \<otimes> x = x"
+  assumes neutral_e:  "\<forall>x. e \<otimes> x = x"
+  shows "e' = e"
+proof -
+  have "e' = e' \<otimes> e" using neutral_e[rule_format] by simp
+  also have "... = e" using neutral_e'[rule_format] by simp
+  finally show ?thesis .
+qed
+
+end
+
+end
+
+
+
+"""
+odp = agent.check(proof)
+for e in odp['errors']:
+    print(e)

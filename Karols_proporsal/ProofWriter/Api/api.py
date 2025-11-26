@@ -59,8 +59,8 @@ def getModel(name = "phi"):
     return Model(user = USER, host = HOST, password = PASSWORD, model = name)
 
 
-
+# # example of use
 # mymodel = getModel()
 # myContext = mymodel.getContext()
 
-# print(myContext.ask(prompt = "ile lat ma aktualny król Karol z Wielkiej brytnai"))
+# print(myContext.ask(prompt = "co ma babcia bajtazara do darmowego kebaba"))

@@ -1,0 +1,36 @@
+Task: Repair the proof of the statement in natural English, structured into steps or lemmas, taking into account the listed errors. The repaired proof must be logically correct and follow the standard proof structure.
+
+Rules:
+- Return ONLY a valid JSON response.
+- Each step or lemma must include:
+  - "id": step or lemma number (unique),
+  - "type": "step" or "lemma",
+  - "statement": what is being proven (non-empty),
+  - "justification": short reasoning for why it holds (must support the statement based on dependencies),
+  - "depends_on": list of step IDs it depends on (may be empty).
+- Ensure the proof is logically sound and consistent; do not include invalid, missing, or circular dependencies.
+- Use the provided Errors section to guide corrections, but do not invent unrelated steps.
+- Do not include any text outside JSON. Any output outside JSON (including explanations) is considered incorrect. Only output JSON.
+
+Statement:
+{STATEMENT_HERE}
+
+Proof:
+{PROOF_HERE}
+
+Errors:
+{ERRORS_HERE}
+
+Answer (JSON format):
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "...",
+      "justification": "...",
+      "depends_on": []
+    }
+  ],
+  "conclusion": "..."
+}
