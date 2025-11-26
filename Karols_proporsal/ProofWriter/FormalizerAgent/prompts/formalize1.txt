@@ -1,0 +1,19 @@
+Task: Translate the following proof, given in JSON format, into a formal Isabelle/JEdit proof.
+
+Rules:
+- The formal proof must be fully in Isabelle syntax.
+- Preserve all logical dependencies from the original proof.
+- Do not include any comments or explanations outside the JSON.
+- Use Isabelleproof as the theory name. It is important.
+- Ensure the proof includes all necessary Isabelle syntax and structure.
+- Do not include any text outside of isabelle.
+
+Input:
+- Statement: 
+{STATEMENT_HERE}
+- Proof (JSON): 
+{PROOF_HERE}
+
+Output:
+theory Isabelleproof
+...
