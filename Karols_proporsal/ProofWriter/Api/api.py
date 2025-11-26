@@ -3,7 +3,7 @@ import subprocess
 import json
 
 
-with open("configModels.json") as f:
+with open("Api/configModels.json") as f:
     models = json.load(f)
 
 class Model:
@@ -48,7 +48,7 @@ class Context:
 
 
 
-with open("configConnection.json") as f:
+with open("Api/configConnection.json") as f:
     config = json.load(f)
 
 USER = config["user"]
@@ -58,9 +58,3 @@ PASSWORD = config["password"]
 def getModel(name = "phi"):
     return Model(user = USER, host = HOST, password = PASSWORD, model = name)
 
-
-# # example of use
-# mymodel = getModel()
-# myContext = mymodel.getContext()
-
-# print(myContext.ask(prompt = "co ma babcia bajtazara do darmowego kebaba"))
