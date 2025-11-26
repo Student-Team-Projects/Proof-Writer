@@ -13,5 +13,14 @@ with open(path, "r", encoding="utf-8") as f:
     statement = f.read()
 
 model = ma.MainAgent()
+
 logging.basicConfig(level=logging.INFO)
-print(model.solve(statement))
+
+proof, verification = model.solve(statement)
+
+print(proof)
+
+if verification: 
+    print("Verification was successful")
+else:
+    print("Werification failed")
