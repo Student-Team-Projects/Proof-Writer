@@ -52,7 +52,7 @@ class MainAgent:
         formal_proof_json = self.formalizerAgent.formalize(statement,proof)
         logging.debug(formal_proof_json)
         formal_proof_json = formal_proof_json[11:-3]
-        logging.debug(formal_proof_json)
+        # logging.debug(formal_proof_json)
         logging.info("Check formal proof")
         verify = self.isabelleAgent.check(formal_proof_json)
         logging.debug(verify)

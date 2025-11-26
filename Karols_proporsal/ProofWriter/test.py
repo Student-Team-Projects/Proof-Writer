@@ -14,7 +14,8 @@ with open(path, "r", encoding="utf-8") as f:
 
 model = ma.MainAgent()
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 proof, verification = model.solve(statement)
 
