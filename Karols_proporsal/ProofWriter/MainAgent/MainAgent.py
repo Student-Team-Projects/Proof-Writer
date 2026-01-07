@@ -15,11 +15,12 @@ from Tools.JsonExtractor import *
 class MainAgent:
 
     def __init__(self):
+        self.DSModel = api.getModel("deepseek-r1")
         self.phiModel = api.getModel("phi")
-        self.solverAgent = sol.SolverAgent(self.phiModel)
+        self.solverAgent = sol.SolverAgent(self.DSModel)
         self.stepsChecker = stc.StepsCheckAgent(self.phiModel)
-        self.translatorAgent = tra.TranslatorAgent(self.phiModel)
-        self.formalizerAgent = form.FormalizerAgent(self.phiModel)
+        self.translatorAgent = tra.TranslatorAgent(self.DSModel)
+        self.formalizerAgent = form.FormalizerAgent(self.DSModel)
         self.isabelleAgent = isa.IsabelleAgent()
 
     def solve(self,statement, n_atteppts = 5):
@@ -56,6 +57,10 @@ class MainAgent:
         logging.info("Check formal proof")
         verify = self.isabelleAgent.check(formal_proof_json)
         logging.debug(verify)
+        if verify['ok']:
+            logging.info("formal verification successful")
+        else:
+            logging.info("formal verification failed")
 
 
 
