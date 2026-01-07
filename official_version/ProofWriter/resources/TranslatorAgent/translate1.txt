@@ -1,0 +1,17 @@
+Task: Rewrite the following step-by-step mathematical proof into a single, coherent, and natural-flowing narrative.
+
+Style Guidelines:
+
+ - Narrative Flow: Transform the discrete steps into a smooth academic paragraph. Use logical connectors such as "Suppose that," "Consequently," "By definition," "This implies," and "As a result."
+
+ - Synthesis: Do not just list the justifications. Integrate the reasoning into the sentences so it reads like a textbook proof.
+
+ - Formatting: Provide the result as plain text. Do not use bullet points, numbered lists, or JSON formatting. Use standard paragraph breaks if the proof is long.
+
+Input:
+Statement:
+{STATEMENT_HERE}
+
+Proof (step-by-step):
+{PROOF_HERE}
+
