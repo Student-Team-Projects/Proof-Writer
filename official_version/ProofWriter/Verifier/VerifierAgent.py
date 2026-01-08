@@ -7,13 +7,14 @@ import json
 import logging
 class VerifierAgent:
 
-    def __init__(self, formalizer, isabelle):
+    def __init__(self, formalizer, isabelle, n_attempts = 5):
         self.formalizerAgent = formalizer
         self.isabelleAgent = isabelle
+        self.n_attempts = n_attempts
 
-    def verify(self,statement, proof, n_attempts = 20):
+    def verify(self,statement, proof):
         # print(proof)
-        for attempt in range(n_attempts):
+        for attempt in range(self.n_attempts):
             logging.info(f"{attempt+1} attempt at formalize")
             formal_proof = self.formalizerAgent.formalize(statement,proof)
             logging.debug(formal_proof)

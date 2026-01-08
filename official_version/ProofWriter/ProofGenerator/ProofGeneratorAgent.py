@@ -7,16 +7,17 @@ import json
 import logging
 class ProofGeneratorAgent:
 
-    def __init__(self, solver, checker):
+    def __init__(self, solver, checker, n_attempts = 5):
         self.solverAgent = solver
         self.stepsChecker = checker
+        self.n_attempts = n_attempts
 
-    def generate(self,statement, n_attempts = 5):
+    def generate(self,statement):
         logging.info("1 attempt at solutions")
         proof = extract_outermost_json(self.solverAgent.solve(statement))
         logging.debug(proof)
         # print(proof)
-        for attempt in range(n_attempts):
+        for attempt in range(self.n_attempts):
             logging.info(f"check {attempt+1} solution")
             errors = self.stepsChecker.check(statement,proof)
             logging.debug(errors)

@@ -16,30 +16,31 @@ import logging
 import re
 class MainAgent:
 
-    def __init__(self):
-        self.DSModel = api.getModel("deepseek-r1")
-        self.phiModel = api.getModel("phi")
-        self.solverAgent = sol.SolverAgent(self.DSModel)
-        self.stepsChecker = stc.StepsCheckAgent(self.phiModel)
-        self.generatorAgent = gen.ProofGeneratorAgent(self.solverAgent,self.stepsChecker)
-        self.translatorAgent = tra.TranslatorAgent(self.DSModel)
-        self.formalizerAgent = form.FormalizerAgent(self.DSModel)
-        self.isabelleAgent = isa.IsabelleAgent()
-        self.verifierAgent = ver.VerifierAgent(self.formalizerAgent,self.isabelleAgent)
+    def __init__(self,generator, verifier, translator, n_attempts = 5):
+        self.generatorAgent = generator
+        self.verifierAgent = verifier
+        self.translatorAgent = translator
+        self.n_attempts = n_attempts
 
-    def solve(self,statement, n_atteppts = 5):
-        logging.info("start")
-        proof = extract_outermost_json(self.generatorAgent.generate(statement))
-        logging.info("start")
-        if proof == "Neume":
-            return "It is too hard"
-        
-        formal_succes, formal_proof = self.verifierAgent.verify(statement,proof)
-        if formal_succes:
-            logging.info("formal verification successful")
-        else:
-            logging.info("formal verification failed")
-
+    def solve(self,statement):
+        best_proof = ""
+        for na in range(self.n_attempts):
+            logging.info("start")
+            proof = extract_outermost_json(self.generatorAgent.generate(statement))
+            logging.info("start")
+            if proof == "Neume":
+                continue
+            best_proof = proof
+            if self.verifierAgent == None:
+                break
+            formal_succes, formal_proof = self.verifierAgent.verify(statement,proof)
+            if formal_succes:
+                logging.info("formal verification successful")
+                break
+            else:
+                logging.info("formal verification failed")
+        if best_proof == "":
+            return "It's too hard", False
         if self.translatorAgent != None: 
             logging.info("Translate to natural language")
             translate_proof = self.translatorAgent.translate(statement, proof)
