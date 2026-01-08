@@ -14,7 +14,7 @@ class ProofGeneratorAgent:
 
     def generate(self,statement):
         logging.info("1 attempt at solutions")
-        proof = extract_outermost_json(self.solverAgent.solve(statement))
+        proof = self.solverAgent.solve(statement)
         logging.debug(proof)
         # print(proof)
         for attempt in range(self.n_attempts):
@@ -30,7 +30,7 @@ class ProofGeneratorAgent:
                 return proof
             logging.info(f"{attempt+1} solution is incorrect")
             logging.info(f"{2+attempt} attempt at solutions")
-            proof = extract_outermost_json(self.solverAgent.solve(statement,proof,errorsJson['errors']))
+            proof = self.solverAgent.solve(statement,proof,errorsJson['errors'])
             logging.debug(proof)
         return "Neume"
 

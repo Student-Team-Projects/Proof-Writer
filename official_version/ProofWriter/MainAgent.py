@@ -25,27 +25,35 @@ class MainAgent:
     def solve(self,statement):
         best_proof = ""
         for na in range(self.n_attempts):
-            logging.info("start")
-            proof = extract_outermost_json(self.generatorAgent.generate(statement))
-            logging.info("start")
-            if proof == "Neume":
-                continue
-            best_proof = proof
-            if self.verifierAgent == None:
-                break
-            formal_succes, formal_proof = self.verifierAgent.verify(statement,proof)
-            if formal_succes:
-                logging.info("formal verification successful")
-                break
-            else:
-                logging.info("formal verification failed")
+            try:
+                logging.info(f"Attempt {na + 1} start")
+                
+                proof = self.generatorAgent.generate(statement)
+                if proof == "Neume":
+                    continue
+                
+                best_proof = proof
+                
+                if self.verifierAgent is None:
+                    break
+                
+                formal_success, formal_proof = self.verifierAgent.verify(statement, proof)
+                
+                if formal_success:
+                    logging.info("formal verification successful")
+                    break
+                else:
+                    logging.info("formal verification failed")
+
+            except Exception as e:
+                logging.error(f"Error during attempt {na + 1}: {e}")
         if best_proof == "":
             return "It's too hard", False
         if self.translatorAgent != None: 
             logging.info("Translate to natural language")
             translate_proof = self.translatorAgent.translate(statement, proof)
             logging.debug(translate_proof)
-            return translate_proof, formal_succes
-        return proof, formal_succes
+            return translate_proof, formal_success
+        return proof, formal_success
 
         
