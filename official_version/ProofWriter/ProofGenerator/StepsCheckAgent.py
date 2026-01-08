@@ -12,7 +12,7 @@ class StepsCheckAgent:
 
         ctx = self.model.getContext()
 
-        CHECK_PATH = os.path.join(self.CURRENT_DIR,"resources/StepsCheckAgent/check1.txt")
+        CHECK_PATH = os.path.join(self.CURRENT_DIR,"../resources/StepsCheckAgent/check1.txt")
 
         if not os.path.exists(CHECK_PATH):
             raise FileNotFoundError(f"Brak pliku promptu: {CHECK_PATH}")

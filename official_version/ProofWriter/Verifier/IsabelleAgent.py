@@ -61,7 +61,7 @@ class IsabelleAgent:
         self._reset_workspace()
 
         # theory_name = f"Auto_{uuid.uuid4().hex[:8]}"
-        theory_name = "Isabelleproof"
+        theory_name = "Scratch"
 
         self._write_files(theory_name, proof_string)
         ok, errors = self._run_isabelle()

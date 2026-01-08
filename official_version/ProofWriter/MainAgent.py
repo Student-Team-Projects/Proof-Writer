@@ -2,11 +2,13 @@
 
 
 
-import ProofWriter.SolverAgent as sol
-import ProofWriter.StepsCheckAgent as stc
+import ProofWriter.ProofGenerator.SolverAgent as sol
+import ProofWriter.ProofGenerator.StepsCheckAgent as stc
+import ProofWriter.ProofGenerator.ProofGeneratorAgent as gen
 import ProofWriter.TranslatorAgent as tra
-import ProofWriter.FormalizerAgent as form
-import ProofWriter.IsabelleAgent as isa
+import ProofWriter.Verifier.FormalizerAgent as form
+import ProofWriter.Verifier.IsabelleAgent as isa
+import ProofWriter.Verifier.VerifierAgent as ver
 import ProofWriter.Api.api as api 
 from ProofWriter.Tools.JsonExtractor import *
 import json
@@ -19,57 +21,30 @@ class MainAgent:
         self.phiModel = api.getModel("phi")
         self.solverAgent = sol.SolverAgent(self.DSModel)
         self.stepsChecker = stc.StepsCheckAgent(self.phiModel)
+        self.generatorAgent = gen.ProofGeneratorAgent(self.solverAgent,self.stepsChecker)
         self.translatorAgent = tra.TranslatorAgent(self.DSModel)
         self.formalizerAgent = form.FormalizerAgent(self.DSModel)
         self.isabelleAgent = isa.IsabelleAgent()
+        self.verifierAgent = ver.VerifierAgent(self.formalizerAgent,self.isabelleAgent)
 
     def solve(self,statement, n_atteppts = 5):
-        logging.info("1 attempt at solutions")
-        proof = extract_outermost_json(self.solverAgent.solve(statement))
-        logging.debug(proof)
-        # print(proof)
-        step_success = False
-        for attempt in range(n_atteppts):
-            logging.info(f"check {attempt+1} solution")
-            errors = self.stepsChecker.check(statement,proof)
-            logging.debug(errors)
-            # print(errors)
-            # print(errors)
-            errorsJson = json.loads(extract_outermost_json(errors))
-            # print(errorsJson)
-            if errorsJson['correct'] == True:
-                step_success = True
-                logging.info("succes in steps")
-                break
-            logging.info(f"{attempt+1} solution is incorrect")
-            logging.info(f"{2+attempt} attempt at solutions")
-            proof = extract_outermost_json(self.solverAgent.repair(statement,proof,errorsJson['errors']))
-            logging.debug(proof)
-            # print(proof)
-        if step_success == False:
+        logging.info("start")
+        proof = extract_outermost_json(self.generatorAgent.generate(statement))
+        logging.info("start")
+        if proof == "Neume":
             return "It is too hard"
         
-        logging.info("Formalize proof")
-        formal_proof_json = self.formalizerAgent.formalize(statement,proof)
-        logging.debug(formal_proof_json)
-        formal_proof_json = formal_proof_json[11:-3]
-        # logging.debug(formal_proof_json)
-        logging.info("Check formal proof")
-        verify = self.isabelleAgent.check(formal_proof_json)
-        logging.debug(verify)
-        if verify['ok']:
+        formal_succes, formal_proof = self.verifierAgent.verify(statement,proof)
+        if formal_succes:
             logging.info("formal verification successful")
         else:
             logging.info("formal verification failed")
 
-
-
-
-
-
-        logging.info("Translate to natural language")
-        translate_proof = self.translatorAgent.translate(statement, proof)
-        logging.debug(translate_proof)
-        return translate_proof, verify['ok']
+        if self.translatorAgent != None: 
+            logging.info("Translate to natural language")
+            translate_proof = self.translatorAgent.translate(statement, proof)
+            logging.debug(translate_proof)
+            return translate_proof, formal_succes
+        return proof, formal_succes
 
         
