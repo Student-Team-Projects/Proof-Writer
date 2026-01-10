@@ -1,0 +1,1954 @@
+INFO:root:Attempt 1 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Assume there exists an element e in the group G such that for every element g in G, eg = ge = g.",
+      "justification": "Definition of a neutral element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume there exists another element f in the group G such that for every element h in G, hf = fh = h.",
+      "justification": "Suppose there is a second neutral element f.",
+      "depends_on": []
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Consider the product ef. Since e is a neutral element, ef = f. Similarly, since f is a neutral element, ef = e.",
+      "justification": "Using the properties of neutral elements.",
+      "depends_on": [1, 2]
+    },
+    {
+      "id": 4,
+      "type": "lemma",
+      "statement": "Therefore, f must equal e because ef cannot simultaneously be equal to both e and f unless e = f.",
+      "justification": "From the previous step, ef = e and ef = f implies e = f.",
+      "depends_on": [3]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Thus, any two neutral elements in the group must be equal, proving uniqueness.",
+      "justification": "By contradiction, assuming two neutrals leads to their equality.",
+      "depends_on": [4]
+    }
+  ],
+  "conclusion": "Therefore, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Group Main
+begin
+
+lemma unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes "!!g. g ∈ G --> (mult g e) = g ∧ (mult e g) = g" -- e is a neutral element
+    and "!!h. h ∈ G --> (mult h f) = h ∧ (mult f h) = h" -- f is another supposed neutral element
+shows "e = f"
+proof -
+have "mult e f = e" using assms by simp -- Since e is neutral, ef = f
+have "mult e f = f" using assms by simp -- Since f is neutral, ef = e
+thus "e = f" by simp -- From ef = e and ef = f, we conclude e = f
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['*** Cannot load theory file "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Group.thy"', '*** The error(s) above occurred for theory "Scratch.Group"', '*** (required by "Scratch.Scratch") (line 2 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Cannot load theory file "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Group.thy"', '*** No such file: "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Group.thy"', '*** The error(s) above occurred in session "Scratch" (line 1 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/ROOT")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Group Lattice
+begin
+
+theorem unique_neutral_element:
+fixes x :: "'a::group"
+    and e :: "'a::group" where "!!g. g * e = g"
+    and f :: "'a::group" where "!!h. h * f = h"
+shows "e = f"
+proof -
+have "e = f"
+by (simp_all)
+then show ?thesis
+by simp
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['*** Cannot load theory file "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Group.thy"', '*** The error(s) above occurred for theory "Scratch.Group"', '*** (required by "Scratch.Scratch") (line 2 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Cannot load theory file "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Lattice.thy"', '*** The error(s) above occurred for theory "Scratch.Lattice"', '*** (required by "Scratch.Scratch") (line 2 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Cannot load theory file "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Group.thy"', '*** No such file: "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Group.thy"', '*** No such file: "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Lattice.thy"', '*** The error(s) above occurred in session "Scratch" (line 1 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/ROOT")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 2 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Every group has at least one neutral element.",
+      "justification": "By definition, a group must contain a neutral element, often denoted as \( e \), such that for every element \( a \) in the group, \( ae = ea = a \). This is one of the group axioms.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "Assume there exists another neutral element \( e' \) in the group distinct from \( e \).",
+      "justification": "To prove uniqueness, we assume the opposite: that there are two distinct neutral elements \( e \) and \( e' \). This assumption will lead to a contradiction.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Using the properties of group operations, we can show that \( e = e' \).",
+      "justification": "Since both \( e \) and \( e' \) are neutral elements, they must satisfy \( ee' = e' \) and \( e'e = e \). By cancellation, all elements in the group must be equal to each other.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Therefore, all elements in the group are identical.",
+      "justification": "From step 3, since \( e = e' \), it follows that every element in the group must be equal to the neutral element, making the group trivial with only one element.",
+      "depends_on": [3]
+    }
+  ],
+  "conclusion": "Hence, every group has a unique neutral element because all elements are identical."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": false,
+  "errors": "Step 3 incorrectly uses cancellation to conclude that all elements in the group are equal. The correct reasoning should show that \( e = e' \) without implying all group elements are identical. Step 4 incorrectly concludes that all elements in the group must be the same, which is not necessary for proving uniqueness of the neutral element."
+}
+```
+ERROR:root:Error during attempt 2: Invalid \escape: line 3 column 144 (char 165)
+INFO:root:Attempt 3 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with binary operation \( * \), and let \( e \in G \) be the neutral element such that for all \( a \in G \), \( e * a = a * e = a \).",
+      "justification": "By definition of a group, there exists a unique neutral element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "Suppose there exist two neutral elements \( e, f \in G \). We aim to show \( e = f \).",
+      "justification": "Assume for contradiction that there are two distinct neutral elements.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "\( e * f = f \) because \( e \) is a neutral element, and \( e * f = e \) because \( f \) is also a neutral element.",
+      "justification": "Both \( e \) and \( f \) act as identities for each other.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Similarly, \( f * e = e \) because \( f \) is a neutral element, and \( f * e = f \) because \( e \) is also a neutral element.",
+      "justification": "Both elements serve as identities for each other again.",
+      "depends_on": [2]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "From steps 3 and 4, we conclude \( e = f \).",
+      "justification": "The only way both can hold is if the two elements are equal.",
+      "depends_on": [3, 4]
+    }
+  ],
+  "conclusion": "Therefore, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+
+The proof correctly demonstrates that every group has a unique neutral element. Here's an analysis of each step:
+
+1. **Step 1**: Correctly defines the existence of a neutral element in a group by definition.
+2. **Lemma 2**: Properly sets up a contradiction to show uniqueness.
+3. **Step 3**: Correctly uses the property of the neutral element to show \( e * f = f \) and \( e * f = e \).
+4. **Step 4**: Similarly shows \( f * e = e \) and \( f * e = f \), reinforcing the identity properties.
+5. **Step 5**: Concludes that \( e = f \) from the previous steps, establishing uniqueness.
+
+The proof is logically sound and follows the rules of group theory correctly.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+    and neut :: "'a set => 'a => bool" (infixl "∈" 50)
+assumes group: "Group.group mult (carrier := G)"
+    and e_neut: "e ∈ G"
+    and f_neut: "f ∈ G"
+shows "e = f"
+proof -
+have "mult e f = f" using e_neut by simp
+have "mult e f = e" using f_neut by simp
+thus "e = f" by simp
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner syntax error (line 9 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at ":= G )"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+assumes group: "!!x y z: G. mult x (mult y z) = mult (mult x y) z" (* Associativity *)
+    and neutral_exists: "\<exists> e : G. !!x: G. mult e x = x" (* Existence of neutral element *)
+shows "!!e f : G. mult e f = e"
+proof -
+  -- Assume the existence of two neutral elements e and f in G.
+  obtain e where h1: "!!x: G. mult e x = x" using neutral_exists by simp
+  obtain f where h2: "!!x: G. mult x f = x" using neutral_exists by simp
+
+  -- Show that e * f = e and f * e = f, leading to the conclusion that e = f.
+  have "mult e f = e" using h1 [OF f] by simp
+  have "mult f e = f" using h2 [OF e] by simp
+
+  -- Use associativity to combine the above results.
+  have "mult (mult e f) e = mult e (mult f e)" using group by simp
+  also have "... = mult e f" using h1 [OF f] by simp
+  finally have "mult (mult e f) e = e" using h2 [OF e] by simp
+
+  -- Since mult e f = e and mult f e = f, we conclude e = f.
+  thus ?thesis by simp
+end
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner syntax error (line 8 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at ": G . mult x ( mult y z ) = mult ( mult x y ) z"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 4 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let G be a group with binary operation *.",
+      "justification": "Define the group and its operation.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "There exists an element e in G such that for all g in G, g * e = g.",
+      "justification": "By the group axiom of existence of identity element.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "lemma",
+      "statement": "There exists an element f in G such that for all g in G, f * g = g.",
+      "justification": "By the group axiom of existence of identity element (assuming two identities exist).",
+      "depends_on": [1]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Assume e and f are both neutral elements in G.",
+      "justification": "From lemmas 2 and 3, we have two neutral elements e and f.",
+      "depends_on": [2, 3]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Then e * f = e (since f is neutral) and e * f = f (since e is neutral).",
+      "justification": "Using the properties of neutral elements.",
+      "depends_on": [4]
+    },
+    {
+      "id": 6,
+      "type": "step",
+      "statement": "Therefore, e = f.",
+      "justification": "From step 5, since e * f must equal both e and f, hence they are the same element.",
+      "depends_on": [5]
+    },
+    {
+      "id": 7,
+      "type": "step",
+      "statement": "Thus, the neutral element in G is unique.",
+      "justification": "From step 6, any two neutral elements must be equal, proving uniqueness.",
+      "depends_on": [6]
+    }
+  ],
+  "conclusion": "Therefore, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+``` 
+
+The proof provided is correct. Here's a brief explanation:
+
+- The proof correctly defines a group and its binary operation.
+- It uses the group axioms to establish the existence of identity elements \( e \) and \( f \).
+- By assuming both exist, it shows that they must be equal using their properties.
+- This logically leads to the conclusion that the identity element is unique.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theorem unique_neutral_in_group:
+fixes mult :: "'a => 'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id_e: "!!x. mult e x = x"
+    and right_id_e: "!!x. mult x e = x"
+    and left_id_f: "!!x. mult f x = x"
+    and right_id_f: "!!x. mult f x = x"
+shows "e = f"
+proof -
+have "mult e f = e" using right_id_f by simp
+have "mult e f = f" using left_id_e by simp
+thus ?thesis by simp
+qed
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['*** [line 1 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"] error: command "theory" expected,', '*** but identifier was found:', '*** theorem', '*** ', '*** ', '*** ^', '*** The error(s) above occurred for theory "Scratch.Scratch" (line 3 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/ROOT")', '*** The error(s) above occurred in session "Scratch" (line 1 of "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/ROOT")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+    and one :: 'a
+assumes "!!x y z. x ∈ G ∧ y ∈ G ∧ z ∈ G ⇒ mult (mult x y) z = mult x (mult y z)"
+    and "∃e∈G. !!g. g ∈ G ⇒ mult e g = g"
+    and "∃f∈G. !!g. g ∈ G ⇒ mult f g = g"
+shows "one = f"
+proof -
+  obtain e ∈ G where h1: "!!g. g ∈ G ⇒ mult e g = g" using assms(2) by blast
+  obtain f ∈ G where h2: "!!g. g ∈ G ⇒ mult f g = g" using assms(3) by blast
+  have "mult e f = mult e f" by simp
+  also have "mult e f = e" using h2 h1 by simp [h2]
+  also have "mult e f = f" using h1 h2 by simp [h1]
+  therefore "e = f" by simp
+  then show ?thesis using h1 h2 by simp [h1, h2]
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner lexical error (line 9 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "∈ G ∧ y ∈ G ∧ z ∈ G ⇒ mult (mult x y) z = mult x (mult y z)"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 5 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let G be a group with operation *.",
+      "justification": "We start by considering any group G under an associative binary operation *.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume e is the neutral element in G such that for all a in G, a * e = a and e * a = a.",
+      "justification": "By definition of a group, there exists at least one neutral element, typically denoted as e.",
+      "depends_on": []
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Suppose f is another neutral element in G different from e.",
+      "justification": "To prove uniqueness, we consider the possibility of a distinct neutral element f.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "lemma",
+      "statement": "For all a in G, if a * f = a and f * a = a, then e = f.",
+      "justification": "Assume both e and f act as neutral elements. Then, by definition, e * f should equal f and f * e should equal e. Since e is already the neutral element, applying it to f gives e = e * f = f, proving e = f.",
+      "depends_on": [2,3]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Thus, e must equal f, proving uniqueness.",
+      "justification": "By Lemma 4, any supposed distinct neutral element f must actually be equal to e.",
+      "depends_on": [4]
+    }
+  ],
+  "conclusion": "Therefore, every group has exactly one neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+and inv :: "'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id: "!!x. mult e x = x"
+    and right_id: "!!x. mult x e = x"
+    and group: "'a::group"
+shows "e = inv e"
+proof -
+have "inv e = mult e (inv e)" using right_id by simp
+also have "... = mult (mult e e) (inv e)"
+    using left_inv by simp
+also have "... = mult e (mult e (inv e))"
+    using assoc by simp
+also have "... = e"
+    using right_id by simp
+finally show "e = inv e" .
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner syntax error (line 11 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "\'a :: group"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id: "!!x. mult (inv x) x = x"
+    and right_id: "!!x. mult x (inv x) = x"
+shows "inv (inv x) = x"
+proof -
+have "inv (inv x) = x"
+proof
+  -- Assume there is another neutral element f such that both e and f act as identities.
+  have h1: "mult (inv x) (inv x) = inv x" using right_id by simp
+  have h2: "mult (inv (inv x)) (inv x) = inv x" using right_id [of "inv x"] by simp
+  -- Since e * f = f and f * e = e, but e is already the identity, we can conclude that e = f.
+  have h3: "mult (inv x) (inv (inv x)) = inv (inv x)" using left_id [of "inv x"] by simp
+  -- Using associativity, we show that the operations are structurally similar and thus e = f.
+  have h4: "mult (mult (inv x) (inv x)) (inv (inv x)) = mult (inv x) (mult (inv x) (inv (inv x)))" using assoc by simp
+  -- Simplify the expressions to conclude that inv(inv(x)) = x.
+  simp_all
+end
+
+finally show "inv (inv x) = x" .
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Bad context for command "have" (line 19 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** At command "have" (line 19 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 6 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Every group has at least one neutral element.",
+      "justification": "By definition of a group, there must exist an identity element that satisfies $e \cdot g = g \cdot e = g$ for all $g$ in the group.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "If a group has two neutral elements, they must be equal.",
+      "justification": "Assume $e_1$ and $e_2$ are both neutral elements. Then $e_1 = e_1 \cdot e_2 = e_2$. Hence, $e_1 = e_2$.",
+      "depends_on": [1]
+    }
+  ],
+  "conclusion": "Therefore, every group has exactly one neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+assumes group: "Group (mult)"
+shows "\<exists> e. ( \<forall> a : G. mult e a = a ) ∧ ( \<forall> a : G. mult a e = a ) ∧ (\<forall>e'. ( \<forall> a : G. mult e' a = a ) ⟹ e' = e)"
+proof -
+  -- Existence of an identity element in the group.
+  have exists_id: "\<exists> e : 'a. ( \<forall> a : G. mult e a = a ) ∧ ( \<forall> a : G. mult a e = a )"
+    by (rule Group.id_exists) simp_all
+  obtain e from exists_id
+  -- Uniqueness of the identity element.
+  have unique_id: "\<forall>e'. ( \<forall> a : G. mult e' a = a ) ⟹ e' = e"
+  proof intro
+    intro e'
+    intro h
+    -- Using the existence and properties of the identity element to show uniqueness.
+    have "mult e' e = mult e e" by simp_all
+    have "e' = e" by simp_all
+    exact this
+  qed
+  -- Combining existence and uniqueness into a single statement.
+  refine' ⟨e, _, _, unique_id⟩
+  all_goals simp_all
+end
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner lexical error (line 9 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "∧ ( ∀ a : G. mult a e = a ) ∧ (∀e\'. ( ∀ a : G. mult e\' a = a ) ⟹ e\' = e)"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Complex_Main
+begin
+
+theorem unique_neutral_element:
+fixes e1 e2 :: 'a
+    and mul :: "'a => 'a => 'a"
+assumes "!!x. mul x e1 = x" -- For all elements x, multiplying by e1 on the right leaves x unchanged (right identity property)
+    and "!!x. mul e2 x = x" -- For all elements x, multiplying by e2 on the left leaves x unchanged (left identity property)
+shows "e1 = e2"
+proof -
+have "mul e1 e2 = e2" using assms(1) -- Using right identity property with x = e2
+also have "mul e1 e2 = e1" using assms(2) [of e1] -- Using left identity property with x = e1, and the associativity of multiplication in groups
+thus "e1 = e2" by simp -- Simplifying to conclude that e1 must equal e2
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Outer syntax error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): proposition expected,', '*** but keyword fixes (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 7 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with operation \( * \). Let \( e \in G \) be the neutral element.",
+      "justification": "By definition of a group, there exists a neutral element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume there exists another neutral element \( f \in G \) such that for all \( g \in G \), \( g * f = f * g = g \).",
+      "justification": "Neutral elements satisfy the property of leaving any element unchanged when operated with them.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Consider \( e * f \) and \( f * e \). Since \( e \) is the neutral element, \( e * f = f \) and \( f * e = f \).",
+      "justification": "Neutral elements are unique because if two neutral elements exist, they must be equal.",
+      "depends_on": [1, 2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Therefore, \( e * f = f * e \), implying that \( e = f \). Hence, the neutral element is unique.",
+      "justification": "The only way for both \( e * f \) and \( f * e \) to equal each other and remain consistent with the properties of a group's identity element is if \( e = f \).",
+      "depends_on": [2, 3]
+    }
+  ],
+  "conclusion": "Thus, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+    and e :: "'a"
+assumes "!!x. mult e x = x"  -- e is a neutral element (left)
+    and "!!x. mult x e = x"  -- e is a neutral element (right)
+    and "!!x. mult f x = x"  -- f is a neutral element (left)
+    and "!!x. mult x f = x"  -- f is a neutral element (right)
+shows "e = f"
+proof -
+have "mult e f = e" using assms(1) by simp
+have "mult e f = f" using assms(4) by simp
+thus "e = f" by simp
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Outer syntax error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): proposition expected,', '*** but keyword fixes (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes e :: "'a"
+    and mult :: "'a => 'a => 'a"
+assumes "!!x. mult x e = x" (* e is the neutral element *)
+    and "!!x. mult e x = x"
+shows "mult e e = e"
+proof -
+  -- Since e is the neutral element, we can use it directly.
+  have "mult e e = e" using assms(1) by simp
+  also have "e = mult e e" using assms(2) by simp
+  finally show ?thesis by simp
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Bad context for command "have" (line 13 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** At command "have" (line 13 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Outer syntax error (line 12 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): command expected,', '*** but symbolic identifier -- (line 12 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 11 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 8 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let G be a group with binary operation *.",
+      "justification": "We start by considering an arbitrary group G and its operation *.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "There exists an element e in G such that for every a in G, a * e = a.",
+      "justification": "By the group axioms, there must be at least one identity element in G.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "lemma",
+      "statement": "There exists an element u in G such that for every a in G, u * a = a.",
+      "justification": "Similarly, by the group axioms, there must be at least one left identity in G.",
+      "depends_on": [1]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "The elements e and u are equal.",
+      "justification": "Since both e and u act as identities, we have e = e * u = u.",
+      "depends_on": [2, 3]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Suppose there exists another element f in G that acts as a right identity, i.e., for every a in G, a * f = a.",
+      "justification": "Assume such an element f exists by group axioms.",
+      "depends_on": [1]
+    },
+    {
+      "id": 6,
+      "type": "step",
+      "statement": "The elements e and f are equal.",
+      "justification": "Since e is the identity, e = e * f = f.",
+      "depends_on": [2, 5]
+    },
+    {
+      "id": 7,
+      "type": "step",
+      "statement": "Therefore, u = e = f.",
+      "justification": "Combining the above results, all identity-like elements are equal to e.",
+      "depends_on": [4, 6]
+    }
+  ],
+  "conclusion": "Thus, every group has exactly one neutral element, which is unique and serves as both a left and right identity for all elements in the group."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a group"
+shows "G.has_id"
+proof -
+have "\<exists>e. \<forall>a\<in>Gcarrier G. a * e = a"
+    by (rule Group.group_has_id)
+have "\<exists>u. \<forall>a\<in>Gcarrier G. u * a = a"
+    by (rule Group.group_has_id)
+obtain e where "!!a. a \<in> Gcarrier G ==> a * e = a" by (iprover)
+obtain u where "!!a. a \<in> Gcarrier G ==> u * a = a" by (iprover)
+have "e = u"
+    by (simp_all [Group.id_left, Group.id_right])
+have "\<exists>f. !!a. a \<in> Gcarrier G ==> a * f = a"
+    by (rule Group.group_has_id)
+obtain f where "!!a. a \<in> Gcarrier G ==> a * f = a" by (iprover)
+have "e = f"
+    by (simp_all [Group.id_left, Group.id_right])
+thus "!!f. !!a. a \<in> Gcarrier G ==> a * f = a ==> e = f" by simp
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Undefined type name: "group" (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Failed to parse type', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and right_id: "!!x. ∃ e::'a. ∀ a::'a. mult a e = a"
+    and left_inv: "!!x. ∃ u::'a. ∀ a::'a. mult u a = a"
+    and right_inv: "!!x. ∃ f::'a. ∀ a::'a. mult a f = a"
+shows "∃ e::'a, ∀ a::'a. mult e a = a ∧ ∀ b::'a. mult b e = b"
+proof -
+  -- Existence of an element e that acts as a right identity
+  obtain e :: 'a where right_id_e: "∀ a::'a. mult a e = a" using right_id by blast
+  -- Existence of an element u that acts as a left identity
+  obtain u :: 'a where left_id_u: "∀ a::'a. mult u a = a" using left_inv by blast
+  -- Show that e and u are equal, hence the neutral element is unique
+  have "e = u" using right_id_e left_id_u by simp [mult_eq_if]
+  -- Existence of an element f that acts as another right identity
+  obtain f :: 'a where right_id_f: "∀ a::'a. mult a f = a" using right_inv by blast
+  -- Show that e and f are equal, hence the neutral element is unique
+  have "e = f" using right_id_e right_id_f by simp [mult_eq_if]
+  -- Conclude that u = e = f, hence the neutral element is unique
+  have "u = e ∧ e = f" using `e = u` and `e = f` by simp
+  -- Therefore, there exists a unique neutral element e such that for all a, mult e a = a and mult a e = a
+  refine' ⟨e, right_id_e, ?_⟩
+  intro a
+  have "mult a e = a" using right_id_e by simp
+  have "mult e a = a" using left_id_u by simp
+  simp_all [mult_eq_if]
+end
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner lexical error (line 9 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "∃ e::\'a. ∀ a::\'a. mult a e = a"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 9 start
+INFO:root:1 attempt at solutions
+DEBUG:root:{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let G be a group with elements e and e' acting as neutral elements.",
+      "justification": "Assuming two neutral elements exist in the group G.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "For any element a in G, both e*a = a and e'*a = a must hold.",
+      "justification": "Neutral elements satisfy this property by definition.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Consider the product e*e'. Since e is neutral, e*e' = e'*e. Similarly, since e' is also assumed to be neutral, this equals e.",
+      "justification": "By applying the neutrality of both elements on either side.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Thus, e*e' = e, implying that e' must be equal to e because multiplying by e on the left doesn't change the result. Hence, e' = e.",
+      "justification": "This shows both elements are actually the same.",
+      "depends_on": [3]
+    },
+    {
+      "id": 5,
+      "type": "lemma",
+      "statement": "Therefore, any two supposed neutral elements in G must be identical.",
+      "justification": "From step 4, e' = e, proving uniqueness of the neutral element.",
+      "depends_on": [4]
+    }
+  ],
+  "conclusion": "Thus, every group has a unique neutral element."
+}
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+  assumes group_assumptions:
+    "!!x y z: 'a. mult (mult x y) z = mult x (mult y z)" -- Associativity
+    "∃e: 'a. ∀x: 'a. mult e x = x ∧ mult x e = x" -- Existence of neutral element
+    "∀x: 'a. ∃y: 'a. mult x y = e ∧ mult y x = e" -- Existence of inverses
+  shows "∀e1 e2: 'a. (∀x: 'a. mult e1 x = x ∧ mult x e1 = x) → (∀x: 'a. mult e2 x = x ∧ mult x e2 = x) → e1 = e2"
+proof -
+  -- Assume two neutral elements e and e' in the group G.
+  have h_exists_neutral: "∃e: 'a. ∀x: 'a. mult e x = x ∧ mult x e = x" using group_assumptions(2) by simp
+  obtain e from h_exists_neutral
+
+  -- Assume another neutral element e' in the group G.
+  have h_exists_neutral': "∃e': 'a. ∀x: 'a. mult e' x = x ∧ mult x e' = x" using group_assumptions(2) by simp
+  obtain e' from h_exists_neutral'
+
+  -- Show that e and e' must be the same.
+  have h_e_equals_e': "e = e'" 
+  proof -
+    -- Using the properties of neutral elements, we derive that e * e' = e.
+    have h_mult_e_e': "mult e e' = e" using e by simp
+    -- Similarly, since e' is also a neutral element, mult e e' = e'.
+    have h_mult_e'_e: "mult e e' = e'" using e' by simp
+    -- Therefore, e = e'.
+    simp_all
+  qed
+
+  -- Conclude that any two supposed neutral elements in G must be identical.
+  exact h_e_equals_e'
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner syntax error (line 9 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at ": \'a . mult ( mult x y ) z = mult x ( mult y z )"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+lemma unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes "!!x. x ∈ G --> (mult x (inv x)) = (inv x) * x" (* Inverse property *)
+    and "∃e∈G. !!x∈G. mult e x = x ∧ mult x e = x" (* Existence of neutral element *)
+shows "∃!e∈G. !!x∈G. mult e x = x ∧ mult x e = x"
+proof -
+  -- Step 1: Obtain the unique neutral element e from the existence assumption
+  obtain e ∈ G and he where
+    he_uniq: "!!x∈G. mult e x = x" and he_left: "!!x∈G. mult x e = x"
+  using assms by simp
+
+  -- Step 2: Show that any other supposed neutral element must equal e
+  have he_unique: "∀x∈G. mult x e = x ∧ mult e x = x → x = e" by
+    intro x hx
+    have hxeq: "mult x e = x" using hx(1) by simp
+    have expeq: "mult e x = x" using hx(2) by simp
+    have he_eq: "mult e (inv e) = inv e ∧ mult (inv e) e = inv e" using assms by simp
+    have he_inv_eq: "e = inv e" by
+      apply (simp_all [he_uniq, he_left])
+  -- Step 3: Conclude the uniqueness of the neutral element
+  exact ExistsUnique.intro e ⟨by simp [he_uniq, he_left], fun x hx => by simp [he_unique]⟩
+end
+
+```
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner lexical error (line 9 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "∈ G --> (mult x (inv x)) = (inv x) * x"', '*** Failed to parse prop', '*** At command "lemma" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 10 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with binary operation \( * \).",
+      "justification": "Define the group and its operation.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume there exist two neutral elements \( e \) and \( e' \) in \( G \).",
+      "justification": "To prove uniqueness, consider two such elements.",
+      "depends_on": []
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Compute \( e * e' \), which equals both \( e \) and \( e' \).",
+      "justification": "Using the properties of neutral elements, \( e * e' = e \) since \( e' \) is neutral, and \( e * e' = e' \) since \( e \) is neutral.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "lemma",
+      "statement": "Therefore, \( e = e' \), proving uniqueness of the neutral element.",
+      "justification": "Since \( e * e' = e \) and \( e * e' = e' \), it follows that \( e = e' \).",
+      "depends_on": [3]
+    }
+  ],
+  "conclusion": "Every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+``` 
+
+The proof provided is logically sound and correctly demonstrates that every group has a unique neutral element. Here's an explanation:
+
+1. **Step 1**: Introduces the group \( G \) with its binary operation \( * \). This is standard for setting up the context of the proof.
+
+2. **Step 2**: Assumes there are two neutral elements, \( e \) and \( e' \), which is necessary to show they must be equal (i.e., uniqueness).
+
+3. **Step 3**: Uses the properties of neutral elements:
+   - Since \( e' \) is a neutral element, \( e * e' = e \).
+   - Since \( e \) is a neutral element, \( e * e' = e' \).
+   Thus, it follows that \( e = e' \).
+
+4. **Step 4**: Concludes that the two elements are equal, proving uniqueness.
+
+The proof correctly applies group properties and logic to establish the conclusion.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a group"
+fixes e e' :: "'a"
+assumes "group_axioms" -- The assumption that G forms a group is implicit here.
+    and "e * e' = e"
+    and "e * e' = e'"
+shows "e = e'"
+proof -
+have "e = e * e'" by simp [Group.group_left_id]
+also have "... = e'" using assms(2,3) by simp
+finally show ?thesis .
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Outer syntax error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): proposition expected,', '*** but keyword fixes (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a group"
+shows "G.group_hasNeutralOne"
+proof -
+obtain e : 'a where neutral_left: "!!x. x * e = x" using G.not_empty G.group_hasLeftIdentity by blast
+obtain e' : 'a where neutral_right: "!!x. e' * x = x" using G.not_empty G.group_hasRightIdentity by blast
+have "e * e' = e" using neutral_left [of e'] by simp
+have "e * e' = e'" using neutral_right [of e] by simp
+thus "e = e'" by simp
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Undefined type name: "group" (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Failed to parse type', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 11 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with binary operation \( * \). By definition of a group, there exists an element \( e \in G \) such that for every element \( a \in G \), \( e * a = a * e = a \).",
+      "justification": "By the group axioms, every group has at least one identity element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "Suppose there exists another element \( f \in G \) such that for all \( a \in G \), \( f * a = a * f = a \). We aim to show \( e = f \).",
+      "justification": "Assuming two identity elements in the group.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Consider \( e * f \). Since \( e \) is an identity, \( e * f = f \). Similarly, since \( f \) is an identity, \( f * e = e \).",
+      "justification": "Using the properties of the identity elements.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Therefore, \( e = f \) because \( e * f = f \) and \( f * e = e \).",
+      "justification": "Concluding the equality of identity elements based on their actions.",
+      "depends_on": [3]
+    }
+  ],
+  "conclusion": "Hence, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+``` 
+
+The proof correctly demonstrates that every group has a unique neutral element. Each step logically follows from the previous one, adhering to the definitions and axioms of group theory:
+
+1. It starts by asserting the existence of an identity element \( e \) in any group \( G \).
+2. It then considers another potential identity element \( f \) and aims to show that \( e = f \).
+3. By applying the properties of both \( e \) and \( f \), it shows \( e * f = f \) and \( f * e = e \).
+4. The conclusion \( e = f \) follows directly from these equalities, confirming the uniqueness of the identity element.
+
+The proof is logically sound with no errors in reasoning or application of group axioms.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes e :: 'a
+    and f :: 'a
+    and a :: 'a
+    and mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id_e: "!!x. mult e x = x"
+    and right_id_e: "!!x. mult x e = x"
+    and left_inv_e: "!!x. mult (inv x) x = e"
+    and right_id_f: "!!x. mult f x = x"
+    and left_id_f: "!!x. mult x f = x"
+shows "e = f"
+proof -
+have "mult e f = f" using left_id_e by simp
+also have "... = e" using right_id_f by simp
+finally show ?thesis .
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Failed to apply initial proof method (line 20 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"):', '*** using this:', '***   mult f ?x = ?x', '*** goal (1 subgoal):', '***  1. f =', '***     e', '*** At command "by" (line 20 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+assumes "!!a b c. a ∈ G ∧ b ∈ G ∧ c ∈ G ⟹ mult (mult a b) c = mult (a b) c" (* Associativity *)
+    and "∃e∈G. !!x. x ∈ G ⟹ mult e x = x ∧ mult x e = x" (* Existence of identity element e *)
+    and "!!a. a ∈ G ⟹ ∃b∈G. mult a b = e ∧ mult b a = e" (* Existence of inverse elements *)
+shows "∃e∈G. !!x. x ∈ G ⟹ mult e x = x ∧ mult x e = x ∧ (∀f∈G. mult f x = x ∧ mult x f = x → f = e)"
+proof -
+  -- We start by obtaining the identity element e from the group axioms.
+  obtain e ∈ G and he where
+    he': "!!x. x ∈ G ⟹ mult e x = x ∧ mult x e = x"
+  using assms(2) by blast
+
+  -- Next, we assume another element f that also acts as an identity.
+  have hf: "!!x. x ∈ G ⟹ mult x x = x" using he' by simp
+  obtain f ∈ G and hf where
+    hf': "!!x. x ∈ G ⟹ mult f x = x ∧ mult x f = x"
+  using assms(2) by blast
+
+  -- We now show that e must equal f.
+  have "e = f" using he' hf' by simp [hf]
+
+  -- Finally, we conclude that the identity element is unique.
+  refine' ⟨e, he, fun a => _⟩
+  intro ha
+  simp_all
+  <;> aesop
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner lexical error (line 8 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "∈ G ∧ b ∈ G ∧ c ∈ G ⟹ mult (mult a b) c = mult (a b) c"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 12 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( e \) and \( f \) be two neutral elements in a group.",
+      "justification": "Assume there exist two distinct neutral elements for contradiction.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "\( ef = f \) because \( e \) is a left identity.",
+      "justification": "Left multiplication by any element leaves the right operand unchanged.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "\( fe = e \) because \( f \) is a right identity.",
+      "justification": "Right multiplication by any element leaves the left operand unchanged.",
+      "depends_on": [1]
+    },
+    {
+      "id": 4,
+      "type": "lemma",
+      "statement": "Since \( ef = f \) and \( fe = e \), we have \( ef = fe \).",
+      "justification": "Both sides equal their respective operands, hence they are equal.",
+      "depends_on": [2, 3]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Therefore, \( e = f \) because \( ef = fe \).",
+      "justification": "If two elements commute and act as identities for all group elements, they must be equal.",
+      "depends_on": [4]
+    }
+  ],
+  "conclusion": "Hence, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+``` 
+
+The proof provided is correct. Here's a breakdown of why:
+
+- **Step 1**: The step correctly assumes the existence of two neutral elements \( e \) and \( f \) for contradiction, which is a standard method in proofs by contradiction.
+
+- **Step 2**: It correctly uses the property of the left identity: multiplying any element on the left by the identity leaves it unchanged, so \( ef = f \).
+
+- **Step 3**: Similarly, it uses the right identity property: multiplying any element on the right by the identity leaves it unchanged, so \( fe = e \).
+
+- **Step 4**: The lemma correctly concludes that since \( ef = f \) and \( fe = e \), then \( ef = fe \). This follows from substituting the equalities derived in steps 2 and 3.
+
+- **Step 5**: It logically deduces that \( e = f \) because if two elements commute and both act as identities, they must be identical. This step correctly uses the results of steps 2, 3, and 4 to conclude the equality of \( e \) and \( f \).
+
+The conclusion follows directly from the proof: since assuming two distinct neutral elements leads to a contradiction, every group must have a unique neutral element.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+ERROR:root:Error during attempt 12: 'response'
+INFO:root:Attempt 13 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 13: 'response'
+INFO:root:Attempt 14 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let G be a group with operation *.",
+      "justification": "We consider an arbitrary group G under its group operation *.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume that e and f are two identity elements in G such that for all a ∈ G, e * a = a and f * a = a.",
+      "justification": "We suppose there exist two distinct identity elements e and f in G.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Since e is an identity element, e * f = f.",
+      "justification": "By definition of identity element, multiplying any element by e yields the element itself.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Since f is an identity element, e * f = e.",
+      "justification": "Similarly, since f is an identity element, multiplying any element by f yields the element itself.",
+      "depends_on": [2]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Therefore, e = f.",
+      "justification": "From steps 3 and 4, we conclude that e must equal f.",
+      "depends_on": [3,4]
+    }
+  ],
+  "conclusion": "Hence, every group has a unique identity element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+    and e f :: "'a"
+assumes
+    -- Define the group operation properties
+    assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id_e: "!!x. mult e x = x"
+    and right_id_e: "!!x. mult x e = x"
+    and left_inv_e: "!!x. mult (inv x) x = e"
+    -- Assume the existence of another identity element f
+    and exists_f: "!!x. mult f x = x"  -- This represents f being a right identity
+    and exists_f': "!!x. mult x f = x"  -- This represents f being a left identity
+shows "e = f"
+proof -
+have "mult e f = f" using exists_f by simp  -- Since f is a right identity, e * f = f
+also have "... = e" using exists_f' by simp  -- Since f is a left identity, e * f = e
+finally show ?thesis by simp  -- Therefore, e = f
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Outer syntax error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): proposition expected,', '*** but keyword fixes (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes mult :: "'a => 'a => 'a"
+    and e f :: "'a"
+assumes "!!x. mult e x = x" -- "e is an identity element"
+    and "!!x. mult x e = x" -- "e is also a right identity element"
+    and "!!x. mult f x = x" -- "f is an identity element"
+    and "!!x. mult x f = x" -- "f is also a right identity element"
+shows "e = f"
+proof -
+have "mult e f = f" using assms(1,2) by simp -- "Using e's left identity property on f"
+have "mult e f = e" using assms(3,4) by simp -- "Using f's right identity property on e"
+thus ?thesis by simp -- "From the above two results, we conclude e = f"
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner syntax error (line 8 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "-"', '*** Failed to parse prop', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 15 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "lemma",
+      "statement": "Every group has at least one neutral element.",
+      "justification": "By definition of a group, there exists an identity element which serves as the neutral element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume there are two neutral elements e and f in the group G.",
+      "justification": "For contradiction, suppose a group has more than one neutral element.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Since e is neutral, e * f = f.",
+      "justification": "The neutral element combined with any element yields that element.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Similarly, since f is also neutral, e * f = e.",
+      "justification": "The other neutral element when combined with any element also yields that element.",
+      "depends_on": [2]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "Therefore, e must equal f.",
+      "justification": "From steps 3 and 4, combining the two results shows e = f.",
+      "depends_on": [3, 4]
+    }
+  ],
+  "conclusion": "Hence, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes e f :: "'a::group"
+assumes assoc: "!!x y z. x * (y * z) = (x * y) * z"
+    and left_id_e: "!!x. e * x = x"
+    and right_id_f: "!!x. x * f = x"
+    and inv_e: "!!x. (inv x) * x = e"
+    and inv_f: "!!x. x * (inv x) = f"
+shows "e = f"
+proof -
+have "e = f" using left_id_e right_id_f by simp
+also have "... = e * f" using right_id_f by simp
+also have "... = e * f" using left_id_e by simp
+finally show ?thesis by simp
+ qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Undeclared class: "??.group" (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Failed to parse type', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes e f :: 'a
+    and mult :: "'a => 'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id: "!!x. mult e x = x"
+    and right_id: "!!x. mult x e = x"
+    and left_inv: "!!x. mult (inv x) x = e"
+    and right_inv: "!!x. mult x (inv x) = e"
+shows "e = f"
+proof -
+have "mult e f = f" using left_id by simp
+have "mult e f = e" using right_id by simp
+then have "e = f" by blast
+thus ?thesis .
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Type unification failed', '*** ', '*** Type error in application: incompatible operand type', '*** ', "*** Operator:  mult :: 'a ⇒ 'a ⇒ 'a", "*** Operand:   inv x :: ??'a ⇒ ??'b", '*** ', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 16 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with at least one identity element.",
+      "justification": "We start by considering any group and its identity elements.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "If there exists another identity element \( f \) in \( G \), then \( e = f \).",
+      "justification": "Assume \( e \) and \( f \) are both identities. Then, \( e * f = e \) because \( f \) is an identity, and \( e * f = f \) because \( e \) is an identity. Therefore, \( e = f \).",
+      "depends_on": []
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "By Lagrange's theorem, the number of identity elements in \( G \) must divide the order of \( G \).",
+      "justification": "The set containing only the identity element forms a subgroup of order 1. By Lagrange's theorem, its order divides the group's order, implying there can be multiple identity elements as long as their number is a divisor.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "However, in reality, only one identity element exists because it must satisfy \( e * f = e \) and \( e * f = f \), leading to a contradiction if more than one exists.",
+      "justification": "This step incorrectly concludes that multiple identities lead to a contradiction, reinforcing the uniqueness.",
+      "depends_on": [3]
+    }
+  ],
+  "conclusion": "Therefore, every group has exactly two distinct identity elements."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": false,
+  "errors": "The proof contains several errors: Step 2 correctly shows that any two identity elements must be equal, proving uniqueness. However, Step 3 incorrectly applies Lagrange's theorem to the number of identity elements; Lagrange's theorem pertains to subgroups, not individual elements like identities. Furthermore, Step 4 contradicts itself by initially suggesting multiple identities and then concluding their contradiction without proper justification. The final conclusion is incorrect as it claims there are two distinct identity elements, which conflicts with the earlier correct proof in Step 2."
+}
+```
+INFO:root:1 solution is incorrect
+INFO:root:2 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with an identity element \( e \).",
+      "justification": "We consider any group \( G \) and its defined identity element \( e \).",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "If there exists another element \( f \in G \) such that for all \( a \in G \), \( f * a = a * f = a \), then \( e = f \).",
+      "justification": "Using the properties of group identities, we have \( e * f = f \) and \( f * e = e \). By setting \( a = f \), it follows that \( e = f \).",
+      "depends_on": []
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Therefore, any other supposed identity element must equal the original identity element \( e \).",
+      "justification": "By Lemma 2, no distinct identity can exist within \( G \), ensuring the uniqueness of \( e \).",
+      "depends_on": [2]
+    }
+  ],
+  "conclusion": "Hence, every group has exactly one unique neutral element."
+}
+```
+INFO:root:check 2 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+```
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem group_has_unique_neutral:
+fixes e :: 'a
+    and mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes "!!x. x * e = x" -- For all x, x multiplied by e equals x (right identity)
+    and "!!x. e * x = x" -- For all x, e multiplied by x equals x (left identity)
+shows "e = inv e"
+proof -
+have "e = e * e" using mul_right_inv by simp -- Using the right inverse property
+also have "... = inv e * e" using mul_assoc by simp -- Associativity of multiplication
+finally show ?thesis using mul_left_inv by simp -- Left inverse property
+end
+
+theorem unique_neutral_element:
+fixes G :: "'a set"
+    and mult :: "'a => 'a => 'a"
+assumes "!!x y z. x ∈ G ∧ y ∈ G ∧ z ∈ G → (x * y) = (y * x)" -- Commutativity
+    and "!!x y z. x ∈ G ∧ y ∈ G ∧ z ∈ G → ((x * y) * z) = (x * (y * z))" -- Associativity
+    and "∃e∈G. !!x. x ∈ G → (x * e) = x" -- Existence of right identity
+    and "∃e∈G. !!x. x ∈ G → (e * x) = x" -- Existence of left identity
+shows "∃!e∈G. !!x. x ∈ G → (x * e) = x ∧ (e * x) = x"
+proof -
+  -- The proof involves showing that the right and left identities must be the same,
+  -- leveraging the properties of group theory such as associativity and commutativity.
+  obtain e1 ∈ G where h_right: "!!x. x ∈ G → (x * e1) = x" using assms(3)
+  obtain e2 ∈ G where h_left: "!!x. x ∈ G → (e2 * x) = x" using assms(4)
+  have "e1 = e2" by
+    apply h_right -- Applying right identity property to e2
+    apply h_left -- Applying left identity property to e1
+    simp -- Simplifying to show e1 = e2
+  thus ?thesis by
+    refine' ⟨e1, _⟩
+    intro x
+    simp [h_right, h_left] -- Simplifying using both right and left identity properties
+end
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Outer syntax error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): proposition expected,', '*** but keyword fixes (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a group"
+and e :: "'a"
+and f :: "'a"
+assumes "group G" -- Declares that G is a group, implying it has an identity element and inverses.
+and "e = the neutral element of G" -- Specifies e as the unique identity element in G.
+and "f ∈ carrier G" -- States that f is an element of the group G.
+and "∀a∈carrier G. a * f = a ∧ f * a = a" -- Asserts that f acts as an identity element for all elements in G.
+shows "e = f" -- Concludes that e and f must be the same, proving uniqueness.
+proof -
+have "e * f = f" using group.left_id and `f ∈ carrier G` by simp
+-- Using the left identity property of e, we show that multiplying e with f yields f.
+have "f * e = e" using group.right_id and `e ∈ carrier G` by simp
+-- Using the right identity property of f, we show that multiplying f with e yields e.
+then have "e = f"
+by (simplification)
+-- By setting a = f in the equation f * e = e, we derive that e must equal f.
+thus ?thesis
+by simp
+-- This final step confirms the equality e = f, establishing the uniqueness of the neutral element.
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Outer syntax error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"): proposition expected,', '*** but keyword fixes (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy") was found', '*** At command "<malformed>" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 17 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with identity element \( e \\).",
+      "justification": "By definition, every group has at least one identity element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Assume there exists another identity element \( f \) in \( G \\).",
+      "justification": "We aim to show this leads to a contradiction or implies \( e = f \\).",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "lemma",
+      "statement": "For any element \( g \) in \( G \\), \( g = e = f \\).",
+      "justification": "Since both \( e \) and \( f \) are identity elements, multiplying any group element by them leaves the element unchanged.",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Therefore, all elements in \( G \\) must be equal to both \( e \) and \( f \\).",
+      "justification": "If every element is equal to both identities, then \( e = f \\), proving the uniqueness of the identity element.",
+      "depends_on": [3]
+    }
+  ],
+  "conclusion": "Hence, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+``` 
+
+The proof is logically sound and correctly demonstrates the uniqueness of the identity element in a group. Each step follows from the definitions and properties of groups, leading to the conclusion that if there were two identity elements, they must be equal, thus proving their uniqueness. The justification for each step aligns with standard group theory principles.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes e f :: 'a
+    and mult :: "'a => 'a => 'a"
+assumes group: "Group.group mult"
+shows "e = f"
+proof -
+  -- Extract the identity element from the group properties
+  have h1 := Group.left_id group
+  have h2 := Group.right_id group
+  have h3 := Group.left_inv group
+  have h4 := Group.right_inv group
+
+  -- Use an arbitrary element to show that e and f must be equal
+  obtain g where hg: "g ∈ set (Group.carrier group)"
+    using Group.not_empty by blast
+
+  -- Since both e and f are identity elements, they must satisfy the properties of a unique identity
+  have heq: "e = f" using hg h1 h2 h3 h4 by simp_all [Group.mul_assoc]
+
+  -- Therefore, the identity element is unique
+  exact heq
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Undefined constant: "Group.group" (line 8 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+fixes G :: "'a group"
+and e :: "'a"
+assumes "group G" and "neutral e G"
+shows "neutral f G = e"
+proof -
+have "f * e = f" using neutral_left G by simp -- Since e is the identity element, multiplying any element by e leaves it unchanged.
+have "e * f = f" using neutral_right G by simp -- Similarly, multiplying any element by e on the right also leaves it unchanged.
+have "f * f = f" using idempotent G by simp -- The identity element is idempotent under multiplication.
+have "e * e = e" using idempotent G by simp -- The identity element is idempotent under multiplication.
+
+-- Since both e and f act as identity elements, multiplying them together in any order must yield the same result.
+have "f = e" using mul_assoc [OF f e] mul_comm by simp
+thus "neutral f G = e" by simp
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Undefined type name: "group" (line 6 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** Failed to parse type', '*** At command "theorem" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 18 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with identity element \( e \\).",
+      "justification": "By definition, every group has at least one identity element.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "Suppose there exists another element \( f \in G \) such that for all \( g \in G \\), \( f * g = g \) and \( g * f = g \\).",
+      "justification": "Assuming the existence of another identity element in \( G \\).",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Then, using the fact that \( e \) is an identity, we have \( e * f = f \\) because \( f \) acts as an identity.",
+      "justification": "If \( f \) is an identity, it must satisfy \( e * f = f \\).",
+      "depends_on": [2]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "Similarly, since \( f \) is an identity, we have \( f * e = e \\) because \( e \) acts as an identity.",
+      "justification": "If \( e \) is an identity, it must satisfy \( f * e = e \\).",
+      "depends_on": [2]
+    },
+    {
+      "id": 5,
+      "type": "step",
+      "statement": "From steps 3 and 4, we have \( e * f = f \) and \( f * e = e \\).",
+      "justification": "Combining the results from steps 3 and 4.",
+      "depends_on": [3, 4]
+    },
+    {
+      "id": 6,
+      "type": "step",
+      "statement": "Therefore, since \( e * f = f \) and \( f * e = e \\), we conclude that \( e \neq f \\).",
+      "justification": "The results of the multiplications show distinct elements.",
+      "depends_on": [5]
+    }
+  ],
+  "conclusion": "Hence, every group has more than one neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": false,
+  "errors": "In step 6, the conclusion is incorrect. The proof should show that \( e = f \), not \( e \neq f \). Since both \( e \) and \( f \) satisfy the identity property for all elements in the group, it follows from steps 3 and 4 that \( e * f = f \) and \( f * e = e \) must imply \( e = f \), establishing the uniqueness of the identity element."
+}
+```
+ERROR:root:Error during attempt 18: Invalid \escape: line 3 column 81 (char 102)
+INFO:root:Attempt 19 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Every group has at least one neutral element.",
+      "justification": "By definition, a group must have an identity element that acts as a neutral element under the group operation.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "lemma",
+      "statement": "Suppose there exists another neutral element \( e \) in the group.",
+      "justification": "Assume for contradiction that there are two distinct neutral elements \( e \) and \( e_0 \).",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "Using associativity, we can show \( e = e_0 \).",
+      "justification": "Since both are neutral elements, by associativity, \( (e \cdot e_0) \cdot e = e \cdot (e_0 \cdot e) \), which implies \( e = e_0 \). Thus, the neutral element is unique.",
+      "depends_on": [2]
+    }
+  ],
+  "conclusion": "Therefore, every group has exactly one neutral element."
+}
+```
+INFO:root:check 1 solution
+DEBUG:root:```json
+{
+  "correct": true,
+  "errors": ""
+}
+``` 
+
+The proof is correct. It properly demonstrates that every group has a unique neutral element by assuming the existence of two distinct neutral elements and using the property of associativity to show they must be equal, thus proving uniqueness. Each step logically follows from the definitions and properties of groups.
+INFO:root:succes
+INFO:root:1 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+theorem unique_neutral_element:
+  fixes e e0 :: 'a
+    and mul :: "'a => 'a => 'a"
+  assumes assoc: "!!x y z. mul (mul x y) z = mul x (mul y z)"
+    and left_id: "!!x. mul e x = x"
+    and right_id: "!!x. mul x e = x"
+    and left_id0: "!!x. mul e0 x = x"
+    and right_id0: "!!x. mul x e0 = x"
+  shows "e = e0"
+proof -
+have "mul (mul e e0) e = mul e (mul e0 e)"
+  using assoc by simp
+also have "... = mul e e" using right_id0 by simp
+also have "... = e" using right_id by simp
+also have "mul (mul e e0) e = mul e0 (mul e e0)"
+  using assoc by simp
+also have "... = mul e0 e0" using right_id by simp
+also have "... = e0" using right_id0 by simp
+finally show "e = e0" by simp
+qed
+
+end
+INFO:root:check 1 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Failed to apply initial proof method (line 17 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy"):', '*** using this:', '***   mul ?x e0 = ?x', '*** goal (1 subgoal):', '***  1. mul e (mul e0 e) =', '***     mul e', '***      e', '*** At command "by" (line 17 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:1formal solution is incorrect
+INFO:root:2 attempt at formalize
+DEBUG:root:theory Scratch
+imports Main
+begin
+
+lemma "∃e::'a. ∀x::'a. mult e x = x ∧ mult x e = x ∧ ∀y::'a. ∃y'. mult y y' = e)"
+proof -
+  -- We start by assuming the existence of a neutral element `e` and proceed to show its uniqueness.
+  have "∃e::'a. ∀x::'a. mult e x = x ∧ mult x e = x ∧ ∀y::'a. ∃y'. mult y y' = e)"
+    using group_axioms by simp
+  obtain e from this
+  -- Now we show that the neutral element `e` is unique.
+  have "∀x::'a. mult x e = x"
+    using group_axioms by simp
+  have "∀x::'a. mult e x = x"
+    using group_axioms by simp
+  have "!!x y z::'a. mult (mult x y) z = mult x (mult y z)"
+    using group_axioms by simp
+  -- Assume there exists another neutral element `e'` and show it must equal `e`.
+  have "∃e'::'a. ∀x::'a. mult e' x = x ∧ mult x e' = x"
+    using group_axioms by simp
+  obtain e' from this
+  -- Using the properties of the group operation, we prove that `e = e'`.
+  have "mult e e' = e"
+    using this by simp
+  have "mult e e' = e'"
+    using this by simp
+  -- Since both must hold, `e = e'`, proving uniqueness.
+  thus ?thesis by simp
+qed
+
+end
+INFO:root:check 2 formal solution
+DEBUG:root:{'ok': False, 'errors': ['Scratch FAILED (see also "isabelle build_log -H Error Scratch")', '*** Inner lexical error (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")', '*** at "∃e::\'a. ∀x::\'a. mult e x = x ∧ mult x e = x ∧ ∀y::\'a. ∃y\'. mult y y\' = e)"', '*** Failed to parse prop', '*** At command "lemma" (line 5 of "~/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Verifier/isabelle_workspace/Scratch.thy")']}
+INFO:root:2formal solution is incorrect
+INFO:root:Neume
+INFO:root:formal verification failed
+INFO:root:Attempt 20 start
+INFO:root:1 attempt at solutions
+DEBUG:root:```json
+{
+  "proof": [
+    {
+      "id": 1,
+      "type": "step",
+      "statement": "Let \( G \) be a group with elements \( e \) and \( e' \) both acting as neutral elements.",
+      "justification": "Assume there are two neutral elements in the group.",
+      "depends_on": []
+    },
+    {
+      "id": 2,
+      "type": "step",
+      "statement": "\( e \cdot e' = e \) because \( e \) is a neutral element.",
+      "justification": "Applying \( e \) to any element, including \( e' \), yields the same element.",
+      "depends_on": [1]
+    },
+    {
+      "id": 3,
+      "type": "step",
+      "statement": "\( e \cdot e' = e' \) because \( e' \) is a neutral element.",
+      "justification": "Applying \( e' \) to any element, including \( e \), yields the same element.",
+      "depends_on": [1]
+    },
+    {
+      "id": 4,
+      "type": "step",
+      "statement": "\( e = e' \)",
+      "justification": "From steps 2 and 3, since \( e \cdot e' \) equals both \( e \) and \( e' \), they must be the same.",
+      "depends_on": [2,3]
+    }
+  ],
+  "conclusion": "Therefore, every group has a unique neutral element."
+}
+```
+INFO:root:check 1 solution
+ERROR:root:Error during attempt 20: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 21 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 21: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 22 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 22: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 23 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 23: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 24 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 24: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 25 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 25: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 26 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 26: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 27 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 27: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 28 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 28: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 29 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 29: Expecting value: line 1 column 1 (char 0)
+INFO:root:Attempt 30 start
+INFO:root:1 attempt at solutions
+ERROR:root:Error during attempt 30: Expecting value: line 1 column 1 (char 0)
+INFO:root:Translate to natural language
+Traceback (most recent call last):
+  File "/home/karol/Desktop/PP1/Proof-Writer/official_version/./test.py", line 30, in <module>
+    proof, verification = model.solve(statement)
+  File "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/MainAgent.py", line 54, in solve
+    translate_proof = self.translatorAgent.translate(statement, proof)
+  File "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/TranslatorAgent.py", line 24, in translate
+    return ctx.ask(final_prompt, thinking=True)
+  File "/home/karol/Desktop/PP1/Proof-Writer/official_version/ProofWriter/Api/api.py", line 62, in ask
+    return json.loads(raw)['response']
+  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
