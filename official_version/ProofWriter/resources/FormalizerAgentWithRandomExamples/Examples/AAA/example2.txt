@@ -1,0 +1,22 @@
+theory Scratch
+imports Main
+begin
+
+lemma double_negation: "~~P \<longleftrightarrow> P"
+proof
+assume "~~P"
+then show P
+    by blast
+next
+assume P
+then show "~~P"
+    by blast
+qed
+
+fun add_one :: "nat \<Rightarrow> nat" where
+"add_one x = x + 1"
+
+theorem add_one_gt_zero: "add_one x > 0"
+by simp
+
+end

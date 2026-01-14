@@ -1,0 +1,19 @@
+theory Scratch
+imports Main
+begin
+
+theorem divides_linear_combination:
+fixes a b c m n :: int
+assumes "a dvd b" "a dvd c"
+shows   "a dvd (m * b + n * c)"
+proof -
+from assms obtain k where hk: "b = a * k" by (elim dvdE)
+from assms obtain l where hl: "c = a * l" by (elim dvdE)
+
+have "m * b + n * c = a * (m * k + n * l)"
+    using hk hl by (simp add: distrib_left distrib_right)
+
+then show ?thesis by (simp add: dvdI)
+qed
+
+end

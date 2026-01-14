@@ -12,17 +12,22 @@ if not os.path.exists(path):
 with open(path, "r", encoding="utf-8") as f:
     statement = f.read()
 
+
+GPTModel = pw.Api.api.getModel("gpt-oss-cloud") 
+GPTMniejszy = pw.Api.api.getModel("gpt-oss")
 DSModel = pw.Api.api.getModel("deepseek-r1")
+DSV3Model = pw.Api.api.getModel("deepseek-v3")
 phiModel = pw.Api.api.getModel("phi")
-solverAgent = pw.ProofGenerator.SolverAgent.SolverAgent(DSModel)
-stepsChecker = pw.ProofGenerator.StepsCheckAgent.StepsCheckAgent(phiModel)
+solverAgent = pw.ProofGenerator.SolverAgent.SolverAgent(DSV3Model)
+stepsChecker = pw.ProofGenerator.StepsCheckAgent.StepsCheckAgent(DSV3Model)
 generatorAgent = pw.ProofGenerator.ProofGeneratorAgent.ProofGeneratorAgent(solverAgent,stepsChecker,2)
-formalizerAgent = pw.Verifier.FormalizerAgent.FormalizerAgent(DSModel)
+formalizerAgent = pw.Verifier.FormalizerAgentWithRandomExamples.FormalizerAgentWithRandomExamples(DSV3Model,{"AAA":2, "all" : 2})
+# formalizerAgent = pw.Verifier.FormalizerAgent.FormalizerAgent(DSV3Model)
 isabelleAgent = pw.Verifier.IsabelleAgent.IsabelleAgent()
 verifierAgent = pw.Verifier.VerifierAgent.VerifierAgent(formalizerAgent,isabelleAgent,2)
 translatorAgent = pw.TranslatorAgent.TranslatorAgent(DSModel)
 
-model = pw.MainAgent.MainAgent(generatorAgent,verifierAgent,translatorAgent,30)
+model = pw.MainAgent.MainAgent(generatorAgent,verifierAgent,translatorAgent,2)
 
 # logging.basicConfig(level=logging.INFO)
 logging.basicConfig(level=logging.DEBUG)
