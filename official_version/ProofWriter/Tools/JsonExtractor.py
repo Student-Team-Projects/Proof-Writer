@@ -26,7 +26,7 @@ def clean_ai_json(raw_output: str) -> dict:
 
     cleaned = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', cleaned)
 
-    cleaned = cleaned.replace('\n', '\\n')
+    #cleaned = cleaned.replace('\n', '\\n')
 
     try:
         data = json.loads(cleaned)
