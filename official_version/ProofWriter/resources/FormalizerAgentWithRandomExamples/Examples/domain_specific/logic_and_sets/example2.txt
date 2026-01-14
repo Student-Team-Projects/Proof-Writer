@@ -1,0 +1,46 @@
+(*  Title:      HOL/Examples/Drinker.thy
+    Author:     Makarius
+
+    MODIFIED
+*)
+
+theory Scratch
+  imports Main
+begin
+
+lemma de_Morgan:
+  assumes "~ (ALL x. P x)"
+  shows "EX x. ~ P x"
+proof (rule classical)
+  assume "~ (EX x. ~ P x)"
+  have "ALL x. P x"
+  proof
+    fix x show "P x"
+    proof (rule classical)
+      assume "~ P x"
+      then have "EX x. ~ P x" ..
+      with `~ (EX x. ~ P x)` show ?thesis by contradiction
+    qed
+  qed
+  with `~ (ALL x. P x)` show ?thesis by contradiction
+qed
+
+
+theorem Drinker's_Principle: "EX x. drunk x \<longrightarrow> (ALL x. drunk x)"
+proof cases
+  assume "ALL x. drunk x"
+  then have "drunk a \<longrightarrow> (ALL x. drunk x)" for a ..
+  then show ?thesis ..
+next
+  assume "~ (ALL x. drunk x)"
+  then have "EX x. ~ drunk x" by (rule de_Morgan)
+  then obtain a where "~ drunk a" ..
+  have "drunk a \<longrightarrow> (ALL x. drunk x)"
+  proof
+    assume "drunk a"
+    with `~ drunk a` show "ALL x. drunk x" by contradiction
+  qed
+  then show ?thesis ..
+qed
+
+end

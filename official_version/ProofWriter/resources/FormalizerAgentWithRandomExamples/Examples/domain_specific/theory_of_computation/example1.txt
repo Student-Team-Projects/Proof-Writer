@@ -1,0 +1,40 @@
+theory Scratch
+  imports Main
+begin
+
+record ('q, 'a) DFA =
+  states :: "'q set"
+  init   :: "'q"
+  final  :: "'q set"
+  delta  :: "'q => 'a => 'q"
+
+primrec delta_star :: "('q, 'a) DFA => 'q => 'a list => 'q" where
+  "delta_star A q [] = q"
+| "delta_star A q (a # w) = delta_star A (delta A q a) w"
+
+definition accepts :: "('q, 'a) DFA => 'a list => bool" where
+  "accepts A w == (delta_star A (init A) w : final A)"
+
+theorem delta_star_append:
+  "delta_star A q (w1 @ w2) = delta_star A (delta_star A q w1) w2"
+proof (induction w1 arbitrary: q)
+  case Nil
+  show ?case by simp
+next
+  case (Cons a w1)
+  have "delta_star A q ((a # w1) @ w2) = delta_star A q (a # (w1 @ w2))" by simp
+  also have "... = delta_star A (delta A q a) (w1 @ w2)" by simp
+  also have "... = delta_star A (delta_star A (delta A q a) w1) w2" by (rule Cons.IH)
+  also have "... = delta_star A (delta_star A q (a # w1)) w2" by simp
+  finally show ?case .
+qed
+
+theorem delta_star_single:
+  "delta_star A q [a] = delta A q a"
+  by simp
+
+lemma accepts_append_init:
+  "accepts A (w1 @ w2) = (delta_star A (delta_star A (init A) w1) w2 : final A)"
+  unfolding accepts_def by (simp add: delta_star_append)
+
+end

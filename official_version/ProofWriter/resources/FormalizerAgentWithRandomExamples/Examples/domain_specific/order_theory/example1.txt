@@ -1,0 +1,69 @@
+(*  Title:      HOL/Examples/Knaster_Tarski.thy
+    Author:     Makarius
+
+Typical textbook proof example.
+
+MODIFIED
+*)
+
+theory Scratch
+  imports Main
+begin
+
+unbundle lattice_syntax
+
+theorem Knaster_Tarski:
+  fixes f :: "'a::complete_lattice => 'a"
+  assumes "mono f"
+  shows "EX a. f a = a"
+proof
+  let ?H = "{u. f u <= u}"
+  let ?a = "Inf ?H"
+  show "f ?a = ?a"
+  proof -
+    {
+      fix x
+      assume "x : ?H"
+      then have "?a <= x" by (rule Inf_lower)
+      with `mono f` have "f ?a <= f x" ..
+      also from `x : ?H` have "... <= x" ..
+      finally have "f ?a <= x" .
+    }
+    then have "f ?a <= ?a" by (rule Inf_greatest)
+    {
+      also presume "... <= f ?a"
+      finally (order_antisym) show ?thesis .
+    }
+    from `mono f` and `f ?a <= ?a` have "f (f ?a) <= f ?a" ..
+    then have "f ?a : ?H" ..
+    then show "?a <= f ?a" by (rule Inf_lower)
+  qed
+qed
+
+theorem Knaster_Tarski':
+  fixes f :: "'a::complete_lattice => 'a"
+  assumes "mono f"
+  shows "EX a. f a = a"
+proof
+  let ?H = "{u. f u <= u}"
+  let ?a = "Inf ?H"
+  show "f ?a = ?a"
+  proof (rule order_antisym)
+    show "f ?a <= ?a"
+    proof (rule Inf_greatest)
+      fix x
+      assume "x : ?H"
+      then have "?a <= x" by (rule Inf_lower)
+      with `mono f` have "f ?a <= f x" ..
+      also from `x : ?H` have "... <= x" ..
+      finally show "f ?a <= x" .
+    qed
+    show "?a <= f ?a"
+    proof (rule Inf_lower)
+      from `mono f` and `f ?a <= ?a` have "f (f ?a) <= f ?a" ..
+      then show "f ?a : ?H" ..
+    qed
+  qed
+qed
+
+end

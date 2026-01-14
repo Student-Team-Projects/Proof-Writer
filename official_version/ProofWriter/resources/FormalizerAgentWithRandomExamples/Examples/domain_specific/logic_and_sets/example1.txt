@@ -1,0 +1,80 @@
+(*  Title:      HOL/Examples/Cantor.thy
+    Author:     Makarius
+
+    MODIFIED
+*)
+
+
+theory Scratch
+  imports Main
+begin
+
+theorem Cantor: "~ (EX f :: 'a => 'a set. ALL A. EX x. A = f x)"
+proof
+  assume "EX f :: 'a => 'a set. ALL A. EX x. A = f x"
+  then obtain f :: "'a => 'a set" where *: "ALL A. EX x. A = f x" ..
+  let ?D = "{x. x ~: f x}"
+  from * obtain a where "?D = f a" by blast
+  moreover have "a : ?D \<longleftrightarrow> a ~: f a" by blast
+  ultimately show False by blast
+qed
+
+theorem "~ (EX f :: 'a => 'a set. ALL A. EX x. f x = A)"
+  by best
+
+theorem "~ (EX f :: 'a => 'a set. ALL A. EX x. f x = A)"
+  by force
+
+lemma iff_contradiction:
+  assumes *: "(~ A) \<longleftrightarrow> A"
+  shows False
+proof (rule notE)
+  show "~ A"
+  proof
+    assume A
+    with * have "~ A" ..
+    from this and `A` show False ..
+  qed
+  with * show A ..
+qed
+
+theorem Cantor': "~ (EX f :: 'a => 'a => bool. ALL A. EX x. A = f x)"
+proof
+  assume "EX f :: 'a => 'a => bool. ALL A. EX x. A = f x"
+  then obtain f :: "'a => 'a => bool" where *: "ALL A. EX x. A = f x" ..
+  let ?D = "%x. ~ f x x"
+  from * have "EX x. ?D = f x" ..
+  then obtain a where "?D = f a" ..
+  then have "?D a \<longleftrightarrow> f a a" by (rule arg_cong)
+  then have "~ f a a \<longleftrightarrow> f a a" .
+  then show False by (rule iff_contradiction)
+qed
+
+
+
+theorem "EX S. S ~: range (f :: 'a => 'a set)"
+proof
+  let ?S = "{x. x ~: f x}"
+  show "?S ~: range f"
+  proof
+    assume "?S : range f"
+    then obtain y where "?S = f y" ..
+    then show False
+    proof (rule equalityCE)
+      assume "y : f y"
+      assume "y : ?S"
+      then have "y ~: f y" ..
+      with `y : f y` show ?thesis by contradiction
+    next
+      assume "y ~: ?S"
+      assume "y ~: f y"
+      then have "y : ?S" ..
+      with `y ~: ?S` show ?thesis by contradiction
+    qed
+  qed
+qed
+
+theorem "EX S. S ~: range (f :: 'a => 'a set)"
+  by best
+
+end

@@ -1,0 +1,45 @@
+(*  Title:      HOL/Examples/Peirce.thy
+    Author:     Makarius
+
+    MODIFIED
+*)
+
+
+theory Scratch
+  imports Main
+begin
+
+theorem "((A --> B) --> A) --> A"
+proof
+  assume "(A --> B) --> A"
+  show A
+  proof (rule classical)
+    assume "~ A"
+    have "A --> B"
+    proof
+      assume A
+      with `~ A` show B by contradiction
+    qed
+    with `(A --> B) --> A` show A ..
+  qed
+qed
+
+
+theorem "((A --> B) --> A) --> A"
+proof
+  assume "(A --> B) --> A"
+  show A
+  proof (rule classical)
+    presume "A --> B"
+    with `(A --> B) --> A` show A ..
+  next
+    assume "~ A"
+    show "A --> B"
+    proof
+      assume A
+      with `~ A` show B by contradiction
+    qed
+  qed
+qed
+
+end

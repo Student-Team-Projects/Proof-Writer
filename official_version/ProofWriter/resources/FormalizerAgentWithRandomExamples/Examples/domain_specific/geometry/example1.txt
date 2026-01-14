@@ -1,0 +1,75 @@
+theory Scratch
+  imports Main
+begin
+
+typedecl point
+typedecl line
+
+consts
+  inc :: "point \<Rightarrow> line \<Rightarrow> bool"
+
+definition inter :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "inter l k \<longleftrightarrow> (\<exists>P. inc P l \<and> inc P k)"
+
+definition para :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "para l k \<longleftrightarrow> (l = k \<or> \<not> inter l k)"
+
+axiomatization where
+  line_ex:
+    "\<And>P Q. P \<noteq> Q \<Longrightarrow> \<exists>l. inc P l \<and> inc Q l" and
+  line_uniq:
+    "\<And>P Q l k. P \<noteq> Q \<Longrightarrow> inc P l \<Longrightarrow> inc Q l \<Longrightarrow> inc P k \<Longrightarrow> inc Q k \<Longrightarrow> l = k" and
+  playfair:
+    "\<And>P l. \<not> inc P l \<Longrightarrow> (\<exists>! k. inc P k \<and> para l k)"
+
+lemma para_refl [simp]: "para l l"
+  unfolding para_def by simp
+
+lemma para_sym: "para l k \<Longrightarrow> para k l"
+  unfolding para_def inter_def by auto
+
+lemma line_inter_pt_uniq:
+  assumes "l \<noteq> k" "inc P l" "inc P k" "inc Q l" "inc Q k"
+  shows "P = Q"
+proof (rule ccontr)
+  assume "P \<noteq> Q"
+  hence "l = k"
+    using line_uniq assms by blast
+  thus False using assms(1) by simp
+qed
+
+lemma para_trans:
+  assumes "para l k" "para k m"
+  shows "para l m"
+proof (cases "l = m")
+  case True thus ?thesis by simp
+next
+  case False
+  show ?thesis
+  proof (rule ccontr)
+    assume "\<not> para l m"
+    then obtain P where P: "inc P l" "inc P m" 
+      unfolding para_def inter_def using False by auto
+    
+    have "\<not> inc P k"
+    proof
+      assume "inc P k"
+      hence "inter l k" unfolding inter_def using P(1) by blast
+      with assms(1) have "l = k" unfolding para_def by auto
+      moreover from \<open>inc P k\<close> P(2) have "inter k m" unfolding inter_def by blast
+      with assms(2) have "k = m" unfolding para_def by auto
+      ultimately have "l = m" by simp
+      with False show False by contradiction
+    qed
+
+    hence "\<exists>!x. inc P x \<and> para k x" using playfair by (simp add: para_sym)
+    
+    moreover have "inc P l \<and> para k l" using P(1) assms(1) para_sym by blast
+    moreover have "inc P m \<and> para k m" using P(2) assms(2) para_sym by blast
+    
+    ultimately have "l = m" by blast
+    with False show False by contradiction
+  qed
+qed
+
+end
