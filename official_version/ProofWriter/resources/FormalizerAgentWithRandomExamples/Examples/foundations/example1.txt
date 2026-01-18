@@ -1,0 +1,47 @@
+(*  Title:      HOL/Examples/Induction_Schema.thy
+    Author:     Alexander Krauss, TU Muenchen
+
+    MODIFIED
+*)
+
+
+theory Scratch
+  imports Main
+begin
+
+lemma nat_standard_induct:
+  "[| P 0; !!n. P n ==> P (Suc n) |] ==> P x"
+by induction_schema (pat_completeness, lexicographic_order)
+
+lemma nat_induct2:
+  "[| P 0; P (Suc 0); !!k. P k ==> P (Suc k) ==> P (Suc (Suc k)) |]
+  ==> P n"
+by induction_schema (pat_completeness, lexicographic_order)
+
+lemma minus_one_induct:
+  "[| !!n::nat. (n ~= 0 ==> P (n - 1)) ==> P n |] ==> P x"
+by induction_schema (pat_completeness, lexicographic_order)
+
+theorem diff_induct:
+  "(!!x. P x 0) ==> (!!y. P 0 (Suc y)) ==>
+    (!!x y. P x y ==> P (Suc x) (Suc y)) ==> P m n"
+by induction_schema (pat_completeness, lexicographic_order)
+
+lemma list_induct2':
+  "[| P [] [];
+  !!x xs. P (x#xs) [];
+  !!y ys. P [] (y#ys);
+    !!x xs y ys. P xs ys ==> P (x#xs) (y#ys) |]
+  ==> P xs ys"
+by induction_schema (pat_completeness, lexicographic_order)
+
+theorem even_odd_induct:
+  assumes "R 0"
+  assumes "Q 0"
+  assumes "!!n. Q n ==> R (Suc n)"
+  assumes "!!n. R n ==> Q (Suc n)"
+  shows "R n" "Q n"
+  using assms
+by induction_schema (pat_completeness+, lexicographic_order)
+
+end

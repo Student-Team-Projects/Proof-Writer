@@ -50,10 +50,14 @@ class MainAgent:
         if best_proof == "":
             return "It's too hard", False
         if self.translatorAgent != None: 
-            logging.info("Translate to natural language")
-            translate_proof = self.translatorAgent.translate(statement, proof)
-            logging.debug(translate_proof)
-            return translate_proof, formal_success
+
+            try:
+                logging.info("Translate to natural language")
+                translate_proof = self.translatorAgent.translate(statement, proof)
+                logging.debug(translate_proof)
+                return translate_proof, formal_success
+            except Exception as e:
+                logging.error(f"Error during attempt {na + 1}: {e}")
         return proof, formal_success
 
         

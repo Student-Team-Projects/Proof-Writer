@@ -3,5 +3,6 @@
     "gpt-oss-cloud": "gpt-oss:120b-cloud",
     "deepseek-r1": "deepseek-r1:14b",
     "gpt-oss": "gpt-oss:20b",
-    "phi-plus": "phi4-reasoning:plus"
+    "phi-plus": "phi4-reasoning:plus",
+    "deepseek-v3": "deepseek-v3.1:671b-cloud"
 }

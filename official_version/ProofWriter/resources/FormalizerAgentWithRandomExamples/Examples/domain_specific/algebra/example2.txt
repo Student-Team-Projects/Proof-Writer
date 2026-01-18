@@ -1,0 +1,29 @@
+theory Scratch
+imports Main
+begin
+
+theorem inverse_of_inverse:
+fixes a e :: 'a
+    and mult :: "'a => 'a => 'a"
+    and inv :: "'a => 'a"
+assumes assoc: "!!x y z. mult (mult x y) z = mult x (mult y z)"
+    and left_id: "!!x. mult e x = x"
+    and right_id: "!!x. mult x e = x"
+    and left_inv: "!!x. mult (inv x) x = e"
+    and right_inv: "!!x. mult x (inv x) = e"
+shows "inv (inv a) = a"
+proof -
+have "inv (inv a) = mult e (inv (inv a))"
+    using left_id by simp
+also have "... = mult (mult a (inv a)) (inv (inv a))"
+    using right_inv by simp
+also have "... = mult a (mult (inv a) (inv (inv a)))"
+    using assoc by simp
+also have "... = mult a e"
+    using right_inv by simp
+also have "... = a"
+    using right_id by simp
+finally show ?thesis .
+qed
+
+end

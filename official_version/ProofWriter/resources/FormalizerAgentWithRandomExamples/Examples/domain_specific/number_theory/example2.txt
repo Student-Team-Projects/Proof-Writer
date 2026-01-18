@@ -1,0 +1,17 @@
+theory Scratch
+imports Complex_Main
+begin
+
+theorem sum_of_two_evens_is_even:
+fixes a b :: int
+assumes "even a" "even b"
+shows "even (a + b)"
+proof -
+from assms obtain k where hk: "a = 2*k" using dvdE by blast
+from assms obtain l where hl: "b = 2*l" using dvdE by blast
+have "a + b = 2*(k + l)" using hk hl by simp
+hence "2 dvd (a + b)" by simp
+thus ?thesis by simp
+qed
+
+end

@@ -1,0 +1,18 @@
+theory Scratch
+imports Main
+begin
+
+theorem swap_middle:
+fixes f :: "'a => 'a => 'a"
+and a b c :: 'a
+assumes assoc: "!!x y z. f (f x y) z = f x (f y z)"
+    and comm:  "!!x y. f x y = f y x"
+shows "f (f a b) c = f (f a c) b"
+proof -
+have "f (f a b) c = f a (f b c)" using assoc by simp
+also have "... = f a (f c b)" using comm by simp
+also have "... = f (f a c) b" using assoc by simp
+finally show ?thesis .
+qed
+
+end

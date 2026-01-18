@@ -1,0 +1,28 @@
+theory Scratch
+imports Main
+begin
+
+theorem subset_is_clique:
+fixes Club :: "'a set"
+    and Team :: "'a set"
+    and knows :: "'a => 'a => bool"
+assumes subset: "Team <= Club"
+    and clique_rule: "!!x y. x : Club ==> y : Club ==> x ~= y ==> knows x y"
+shows "!!a b. a : Team ==> b : Team ==> a ~= b ==> knows a b"
+proof -
+fix a b
+assume a_in_Team: "a : Team"
+assume b_in_Team: "b : Team"
+assume neq: "a ~= b"
+
+have a_in_Club: "a : Club" 
+    using a_in_Team subset by blast
+    
+have b_in_Club: "b : Club" 
+    using b_in_Team subset by blast
+
+show "knows a b"
+    using clique_rule a_in_Club b_in_Club neq by simp
+qed
+
+end
