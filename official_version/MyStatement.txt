@@ -1,0 +1,1 @@
+In any group, for any element x, it's inverse element is unique
