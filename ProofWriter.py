@@ -6,55 +6,99 @@ import logging
 
 import sys
 import argparse
+import json
 
 def main():
     parser = argparse.ArgumentParser(
         description="Run ProofWriter with a provided theorem file"
     )
+
+    parser.add_argument("--input", type=str, help="Path to the file containing a theorem You wish to be proved")
+    parser.add_argument("--output", type=str, help="Path to the file where the proof will be saved")
+    parser.add_argument("--log", choices=["debug", "info"], type=str, help="Logging level: debug or info")
+
+    models = ["gpt-oss-cloud", "gpt-oss", "deepseek-r1", "deepseek-v3", "phi"]
+    parser.add_argument("--steps_checker_model", choices=models, default="deepseek-v3", help="Model to use for steps checker agent")
+    parser.add_argument("--solver_model", choices=models, default="deepseek-v3", help="Model to use for solver agent")
+    parser.add_argument("--translator_model", choices=models, default="deepseek-v3", help="Model to use for translator agent")
+    parser.add_argument("--formalizer_model", choices=models, default="deepseek-v3", help="Model to use for formalizer agent")
+
+    parser.add_argument("--generator_attempts", type=int, default=2, help="Number of attempts for the proof generator agent")
+    parser.add_argument("--verifier_attempts", type=int, default=2, help="Number of attempts for the verifier agent")
+    parser.add_argument("--main_attempts", type=int, default=12, help="Number of attempts for the main agent")
+
     parser.add_argument(
-        "--path",
+        "--examples",
         type=str,
-        required=True,
-        help="Path to the file containing a theorem You wish to be proved"
+        default='{"all" : 7}',
+        help="JSON dictionary specifying the number of random examples from each math field to include in the formalizer prompt (e.g. '{\"algebra\": 3, \"number_theory\": 1}' or '{\"all\": 5}')"
     )
 
     args = parser.parse_args()
-    path = args.path
+    input_path = args.input
+    output_path = args.output
+    log = args.log
+    solver_model = pw.Api.api.getModel(args.solver_model)
+    steps_checker_model = pw.Api.api.getModel(args.steps_checker_model)
+    translator_model = pw.Api.api.getModel(args.translator_model)
+    formalizer_model = pw.Api.api.getModel(args.formalizer_model)
+    generator_attempts = args.generator_attempts
+    verifier_attempts = args.verifier_attempts
+    main_attempts = args.main_attempts
+    examples = args.examples
 
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"File not found: {path}")
+    if input_path and not os.path.exists(input_path):
+        raise FileNotFoundError(f"File not found: {input_path}")
+    if output_path and not os.path.exists(output_path):
+        raise FileNotFoundError(f"File not found: {output_path}")
+    
+    if log == "info":
+        logging.basicConfig(level=logging.INFO)
+    elif log == "debug":
+        logging.basicConfig(level=logging.DEBUG)
 
-    with open(path, "r", encoding="utf-8") as f:
-        statement = f.read()
+    if examples:
+        try:
+            examples = json.loads(examples)
+        except json.JSONDecodeError as e:
+            print(f"Error parsing examples JSON: {e}")
+            sys.exit(1)
 
+    if input_path:
+        with open(input_path, "r", encoding="utf-8") as f:
+            statement = f.read()
+    else:
+        statement = input("Enter the theorem to be proved: ").strip()
 
-    GPTModel = pw.Api.api.getModel("gpt-oss-cloud") 
-    GPTMniejszy = pw.Api.api.getModel("gpt-oss")
-    DSModel = pw.Api.api.getModel("deepseek-r1")
-    DSV3Model = pw.Api.api.getModel("deepseek-v3")
-    phiModel = pw.Api.api.getModel("phi")
-    solverAgent = pw.ProofGenerator.SolverAgent.SolverAgent(DSV3Model)
-    stepsChecker = pw.ProofGenerator.StepsCheckAgent.StepsCheckAgent(DSV3Model)
-    generatorAgent = pw.ProofGenerator.ProofGeneratorAgent.ProofGeneratorAgent(solverAgent,stepsChecker,2)
-    formalizerAgent = pw.Verifier.FormalizerAgentWithRandomExamples.FormalizerAgentWithRandomExamples(DSV3Model,{"all" : 7})
-    # formalizerAgent = pw.Verifier.FormalizerAgent.FormalizerAgent(DSV3Model)
+    # GPTModel = pw.Api.api.getModel("gpt-oss-cloud") 
+    # GPTMniejszy = pw.Api.api.getModel("gpt-oss")
+    # DSModel = pw.Api.api.getModel("deepseek-r1")
+    # DSV3Model = pw.Api.api.getModel("deepseek-v3")
+    # phiModel = pw.Api.api.getModel("phi")
+
+    solverAgent = pw.ProofGenerator.SolverAgent.SolverAgent(solver_model)
+    stepsChecker = pw.ProofGenerator.StepsCheckAgent.StepsCheckAgent(steps_checker_model)
+    generatorAgent = pw.ProofGenerator.ProofGeneratorAgent.ProofGeneratorAgent(solverAgent,stepsChecker,generator_attempts)
+    formalizerAgent = pw.Verifier.FormalizerAgentWithRandomExamples.FormalizerAgentWithRandomExamples(formalizer_model,examples)
+    # formalizerAgent = pw.Verifier.FormalizerAgent.FormalizerAgent(formalizer_model)
     isabelleAgent = pw.Verifier.IsabelleAgent.IsabelleAgent()
-    verifierAgent = pw.Verifier.VerifierAgent.VerifierAgent(formalizerAgent,isabelleAgent,2)
-    translatorAgent = pw.TranslatorAgent.TranslatorAgent(DSModel)
+    verifierAgent = pw.Verifier.VerifierAgent.VerifierAgent(formalizerAgent,isabelleAgent,verifier_attempts)
+    translatorAgent = pw.TranslatorAgent.TranslatorAgent(translator_model)
 
-    model = pw.MainAgent.MainAgent(generatorAgent,verifierAgent,translatorAgent,12)
-
-    # logging.basicConfig(level=logging.INFO)
-    logging.basicConfig(level=logging.DEBUG)
+    model = pw.MainAgent.MainAgent(generatorAgent,verifierAgent,translatorAgent,main_attempts)
 
     proof, verification = model.solve(statement)
 
-    print(proof)
+    if output_path:
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(proof)
+    else :
+        print(proof)
 
     if verification: 
         print("Verification was successful")
     else:
-        print("Werification failed")
+        print("Verification failed")
         
     #Example AlternativeModel launch    
         
