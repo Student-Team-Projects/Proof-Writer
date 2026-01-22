@@ -13,8 +13,6 @@ class FormalizerAgentWithRandomExamples:
         self.requirements = requirements
 
     def formalize(self, statement: str, proof: str):
-
-        ctx = self.model.getContext()
         x = "FormalizerAgentWithRandomExamples"
 
         FORMALIZE_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgentWithRandomExamples/formalize1.txt")
@@ -28,7 +26,7 @@ class FormalizerAgentWithRandomExamples:
 
         final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof).replace("EXAMPLES_HERE", get_examples_string(self.requirements, EXAMPLES_PATH))
         logging.info(final_prompt)
-        return ctx.ask(final_prompt, thinking=True)
+        return self.model.ask(final_prompt, thinking=True)
 
 
 def get_examples_string(requirements: dict, base_path: str = "examples") -> str:

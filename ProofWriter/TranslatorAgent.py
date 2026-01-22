@@ -9,7 +9,6 @@ class TranslatorAgent:
         self.CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     
     def translate(self, statement: str, proof: str):
-        ctx = self.model.getContext()
 
         TRANSLATE_PATH = os.path.join(self.CURRENT_DIR,"resources/TranslatorAgent/translate1.txt")
 
@@ -21,4 +20,4 @@ class TranslatorAgent:
 
         final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof)
 
-        return ctx.ask(final_prompt, thinking=True)
+        return self.model.ask(final_prompt, thinking=True)

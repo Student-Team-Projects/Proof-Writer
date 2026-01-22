@@ -11,8 +11,6 @@ class StepListAgent:
         
     def createStepList(self, statement: str):
         
-        ctx = self.model.getContext()
-        
         PROMPT_PATH = os.path.join(self.CURRENT_DIR,"../resources/StepListAgent/stepListPrompt.txt")
         
         if not os.path.exists(PROMPT_PATH):
@@ -23,6 +21,6 @@ class StepListAgent:
             
         final_prompt = prompt.replace("STATEMENT_HERE", statement)
         
-        return ctx.ask(final_prompt, thinking=True)
+        return self.model.ask(final_prompt, thinking=True)
             
             

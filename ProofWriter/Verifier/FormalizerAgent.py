@@ -11,8 +11,6 @@ class FormalizerAgent:
 
     def formalize(self, statement: str, proof: str):
 
-        ctx = self.model.getContext()
-
         FORMALIZE_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgent/formalize1.txt")
 
         if not os.path.exists(FORMALIZE_PATH):
@@ -23,4 +21,4 @@ class FormalizerAgent:
 
         final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof)
 
-        return ctx.ask(final_prompt, thinking=True)
+        return self.model.ask(final_prompt, thinking=True)

@@ -1,67 +1,52 @@
 #!/usr/bin/env python3
 import subprocess
 import json
-import os
+import requests
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+import logging
 
-# print(CURRENT_DIR)
+def createModel(model_name, session):
+    """
+    Create model associated with a session.
+    """
+    return Model(model_name, session)
 
-MODEL_CONFIG_PATH = os.path.join(CURRENT_DIR, "configModels.json")
-CONNECTION_CONFIG_PATH = os.path.join(CURRENT_DIR, "configConnection.json")
-# print(CONFIG_PATH)
-
-with open(MODEL_CONFIG_PATH) as f:
-    models = json.load(f)
-
-with open(CONNECTION_CONFIG_PATH) as f:
-    config = json.load(f)
-
-USER = config["user"]
-HOST = config["host"]
-PASSWORD = config["password"]
+class Session:
+    def __init__(self, host = "http://127.0.0.1:11434"):
+        self.host = host
+    
+    def list_models(self):
+        """
+        Prints the available model names.
+        """
+        url = self.host.rstrip("/") + "/api/tags"
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        return [m.get("name") for m in data.get("models", []) if "name" in m]
 
 class Model:
-    def __init__(self, user, host, password, model):
-        self.user = user
-        self.host = host
-        self.password = password
-        self.model = models[model]
+    def __init__(self, model_name, session):
+        self.model_name = model_name
+        self.session = session
 
-    def getContext(self):
+    def ask(self, prompt, thinking = True, timeout = 60):
         """
-        Tworzy obiekt kontekstu powiązany z tym modelem.
+        Sends prompt to the model and waits for the response.
         """
-        return Context(self)
-
-
-class Context:
-    def __init__(self, model: Model):
-        self.model = model
-
-
-    def exec_cmd(self, remote_cmd, stdin=None):
-        ssh_cmd = ["sshpass", "-p", self.model.password, "ssh", f"{self.model.user}@{self.model.host}", "curl", "-s", "--data-binary", "@-", "http://localhost:11435/api/generate"]
-        proc = subprocess.run(ssh_cmd, input=stdin, text=True,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # print(ssh_cmd,stdin)
-        return proc.stdout or proc.stderr
-        # print(ssh_cmd)
-        # return input()
-
-
-    def ask(self, prompt, thinking = True):
+        print(f"HOST:{self.session.host}")
+        url = self.session.host.rstrip("/") + "/api/generate"
         body = {
-            "model": self.model.model,
+            "model": self.model_name,
             "prompt": prompt,
             "stream": False,
             "thinking": thinking
         }
-        json_body = json.dumps(body)
-        raw = self.exec_cmd(None, stdin=json_body)
-        return json.loads(raw)['response']
+        resp = requests.post(url, json=body, timeout=timeout)
+        resp.raise_for_status()
+        data = resp.json()
 
-
-def getModel(name = "phi"):
-    return Model(user = USER, host = HOST, password = PASSWORD, model = name)
-
+        return data.get("response", "")
+    
+    def getSession(self):
+        return self.session

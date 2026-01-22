@@ -13,15 +13,17 @@ def main():
         description="Run ProofWriter with a provided theorem file"
     )
 
-    parser.add_argument("--input", type=str, help="Path to the file containing a theorem You wish to be proved")
+    parser.add_argument("--input", type=str, help="Path to the file containing a theorem to prove")
     parser.add_argument("--output", type=str, help="Path to the file where the proof will be saved")
+    parser.add_argument("--host", type=str, default="http://localhost:11434", help="Ollama server address")
     parser.add_argument("--log", choices=["debug", "info"], type=str, help="Logging level: debug or info")
 
-    models = ["gpt-oss-cloud", "gpt-oss", "deepseek-r1", "deepseek-v3", "phi"]
-    parser.add_argument("--steps_checker_model", choices=models, default="deepseek-v3", help="Model to use for steps checker agent")
-    parser.add_argument("--solver_model", choices=models, default="deepseek-v3", help="Model to use for solver agent")
-    parser.add_argument("--translator_model", choices=models, default="deepseek-v3", help="Model to use for translator agent")
-    parser.add_argument("--formalizer_model", choices=models, default="deepseek-v3", help="Model to use for formalizer agent")
+    models = ["gemma3:270m"]
+    default_model = "gemma3:270m"
+    parser.add_argument("--steps_checker_model", choices=models, default=default_model, help="Model to use for steps checker agent")
+    parser.add_argument("--solver_model", choices=models, default=default_model, help="Model to use for solver agent")
+    parser.add_argument("--translator_model", choices=models, default=default_model, help="Model to use for translator agent")
+    parser.add_argument("--formalizer_model", choices=models, default=default_model, help="Model to use for formalizer agent")
 
     parser.add_argument("--generator_attempts", type=int, default=2, help="Number of attempts for the proof generator agent")
     parser.add_argument("--verifier_attempts", type=int, default=2, help="Number of attempts for the verifier agent")
@@ -37,11 +39,13 @@ def main():
     args = parser.parse_args()
     input_path = args.input
     output_path = args.output
+    host = args.host
     log = args.log
-    solver_model = pw.Api.api.getModel(args.solver_model)
-    steps_checker_model = pw.Api.api.getModel(args.steps_checker_model)
-    translator_model = pw.Api.api.getModel(args.translator_model)
-    formalizer_model = pw.Api.api.getModel(args.formalizer_model)
+    sess = pw.Api.api.Session(host)
+    solver_model = pw.Api.api.createModel(args.solver_model, sess)
+    steps_checker_model = pw.Api.api.createModel(args.steps_checker_model, sess)
+    translator_model = pw.Api.api.createModel(args.translator_model, sess)
+    formalizer_model = pw.Api.api.createModel(args.formalizer_model, sess)
     generator_attempts = args.generator_attempts
     verifier_attempts = args.verifier_attempts
     main_attempts = args.main_attempts
