@@ -1,0 +1,7 @@
+pkgbase = proof-writer
+	pkgdesc = LLM-based mathematical proof writer
+	pkgver = 1.0.0
+	pkgrel = 1
+	arch = x86_64
+
+pkgname = proof-writer
