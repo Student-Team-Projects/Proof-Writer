@@ -34,7 +34,6 @@ class Model:
         """
         Sends prompt to the model and waits for the response.
         """
-        print(f"HOST:{self.session.host}")
         url = self.session.host.rstrip("/") + "/api/generate"
         body = {
             "model": self.model_name,
