@@ -30,7 +30,7 @@ class Model:
         self.model_name = model_name
         self.session = session
 
-    def ask(self, prompt, thinking = True, timeout = 60):
+    def ask(self, prompt, thinking = True, timeout = 120):
         """
         Sends prompt to the model and waits for the response.
         """

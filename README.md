@@ -1,5 +1,8 @@
 # Proof-Writer
 
+## Requirements
+- **Ollama server** – the package relies on an Ollama instance for model inference.   
+
 ## Usage
 
 You can run the program using 

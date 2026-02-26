@@ -18,8 +18,8 @@ def main():
     parser.add_argument("--host", type=str, default="http://localhost:11434", help="Ollama server address")
     parser.add_argument("--log", choices=["debug", "info"], type=str, help="Logging level: debug or info")
 
-    models = ["gemma3:270m"]
-    default_model = "gemma3:270m"
+    models = ["gpt-oss:120b-cloud"]
+    default_model = "gpt-oss:120b-cloud"
     parser.add_argument("--steps_checker_model", choices=models, default=default_model, help="Model to use for steps checker agent")
     parser.add_argument("--solver_model", choices=models, default=default_model, help="Model to use for solver agent")
     parser.add_argument("--translator_model", choices=models, default=default_model, help="Model to use for translator agent")
