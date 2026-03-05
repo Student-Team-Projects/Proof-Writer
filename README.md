@@ -2,7 +2,7 @@
 
 ## Usage
 
-You can run the program using 
+You can run the program with 
 ```
 python3 ProofWriter.py 
 ```
