@@ -1,5 +1,5 @@
 # Proof-Writer
-Proof-writer is an LLM-powered application that generates mathematical proofs. Its key feature is that proofs are first written in Isabelle/HOL and only then translated to natural language.
+Proof-writer is an LLM-powered application that generates mathematical proofs. Its key feature is that proofs are first written in steps using natural language, then translated into Isabelle/HOL and verified.
 
 The program requires an LLM and Isabelle/HOL. Providing a (even small) set of example formal proofs significantly improves results.
 
