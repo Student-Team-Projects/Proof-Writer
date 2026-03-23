@@ -33,3 +33,11 @@ python3 ProofWriter.py --input /home/user/Desktop/theorem.txt --log debug --exam
 ```
 python3 ProofWriter.py --log info --generator_attempts 7
 ```
+
+
+### 👥 Authors
+
+* **Karol Bielaszka**
+* **Jacek Markiewicz**
+* **Gabriela Pietras**
+* **Łukasz Trzos** 
