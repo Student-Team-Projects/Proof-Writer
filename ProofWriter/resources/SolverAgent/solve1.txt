@@ -12,7 +12,7 @@ Rules:
 - Do not include any text outside of JSON.
 - If you output anything outside JSON (including explanations or text), the answer is considered incorrect. Only output JSON.
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Answer (JSON format):
 {

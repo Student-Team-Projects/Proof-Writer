@@ -13,13 +13,13 @@ Rules:
 - Do not include any text outside JSON. Any output outside JSON (including explanations) is considered incorrect. Only output JSON.
 
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Proof:
-{PROOF_HERE}
+PROOF_HERE
 
 Errors:
-{ERRORS_HERE}
+ERRORS_HERE
 
 Answer (JSON format):
 {

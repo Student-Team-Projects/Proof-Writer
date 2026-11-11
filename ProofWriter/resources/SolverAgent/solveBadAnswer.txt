@@ -14,7 +14,7 @@ Rules:
 - Your proof must be incorrect because I'm testing checker. You must make a lot of mistakes
 
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Answer (JSON format):
 {

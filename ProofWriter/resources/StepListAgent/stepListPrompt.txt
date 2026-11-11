@@ -121,4 +121,4 @@ When given a theorem statement, only return the JSON solve plan following all ru
 
 NOW, USING ALL ABOVE INFORMATION, WORK WITH THIS STATEMENT:
 
-{STATEMENT_HERE}
+STATEMENT_HERE

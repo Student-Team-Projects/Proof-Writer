@@ -10,8 +10,8 @@ Style Guidelines:
 
 Input:
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Proof (step-by-step):
-{PROOF_HERE}
+PROOF_HERE
 

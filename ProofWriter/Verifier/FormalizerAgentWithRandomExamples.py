@@ -2,31 +2,23 @@
 
 
 import ProofWriter.Api.api as api
+from ProofWriter.Tools.Prompts import fill_prompt, RESOURCES_DIR
 import os
 import random
 import logging
 
+EXAMPLES_PATH = str(RESOURCES_DIR / "FormalizerAgentWithRandomExamples" / "Examples")
+
 class FormalizerAgentWithRandomExamples:
     def __init__(self, model: api.Model, requirements: dict):
         self.model = model
-        self.CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.requirements = requirements
 
     def formalize(self, statement: str, proof: str):
-        x = "FormalizerAgentWithRandomExamples"
-
-        FORMALIZE_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgentWithRandomExamples/formalize1.txt")
-        EXAMPLES_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgentWithRandomExamples/Examples")
-
-        if not os.path.exists(FORMALIZE_PATH):
-            raise FileNotFoundError(f"Prompt file not found: {FORMALIZE_PATH}")
-
-        with open(FORMALIZE_PATH, "r", encoding="utf-8") as f:
-            prompt = f.read()
-
-        final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof).replace("EXAMPLES_HERE", get_examples_string(self.requirements, EXAMPLES_PATH))
-        logging.info(final_prompt)
-        return self.model.ask(final_prompt, thinking=True)
+        examples = get_examples_string(self.requirements, EXAMPLES_PATH)
+        prompt = fill_prompt("FormalizerAgentWithRandomExamples/formalize1.txt", STATEMENT=statement, PROOF=proof, EXAMPLES=examples)
+        logging.info(prompt)
+        return self.model.ask(prompt, thinking=True)
 
 
 def get_examples_string(requirements: dict, base_path: str = "examples") -> str:

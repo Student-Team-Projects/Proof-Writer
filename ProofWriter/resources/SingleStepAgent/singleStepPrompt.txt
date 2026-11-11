@@ -82,7 +82,7 @@ FINAL INSTRUCTION:
 - The string should be immediately usable as the RHS of a lemma in Isabelle/HOL.
 
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Ready Isabelle code fragment:
-{CODE_HERE}
+CODE_HERE

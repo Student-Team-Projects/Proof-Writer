@@ -2,12 +2,11 @@
 
 
 import ProofWriter.Api.api as api
-import os
 import logging
+from ProofWriter.Tools.Prompts import fill_prompt
 class SolverAgent:
     def __init__(self, model):
         self.model = model
-        self.CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
     def solve(self, statement: str, proof = None, errors = None):
         """
@@ -18,28 +17,9 @@ class SolverAgent:
 
             return self.repair(statement,proof,errors)
         
-        SOLVE_PATH = os.path.join(self.CURRENT_DIR,"../resources/SolverAgent/solve1.txt")
-        
-        if not os.path.exists(SOLVE_PATH):
-            raise FileNotFoundError(f"Prompt file not found: {SOLVE_PATH}")
+        prompt = fill_prompt("SolverAgent/solve1.txt", STATEMENT=statement)
+        return self.model.ask(prompt, thinking=True)
 
-        with open(SOLVE_PATH, "r", encoding="utf-8") as f:
-            prompt = f.read()
-
-        final_prompt = prompt.replace("STATEMENT_HERE", statement)
-
-        return self.model.ask(final_prompt, thinking=True)
-    
     def repair(self, statement: str, proof: str, errors):
-
-        REPAIR_PATH = os.path.join(self.CURRENT_DIR,"../resources/SolverAgent/repair1.txt")
-
-        if not os.path.exists(REPAIR_PATH):
-            raise FileNotFoundError(f"Prompt file not found: {REPAIR_PATH}")
-
-        with open(REPAIR_PATH, "r", encoding="utf-8") as f:
-            prompt = f.read()
-
-        final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof).replace("ERRORS_HERE", errors)
-
-        return self.model.ask(final_prompt, thinking=True)
+        prompt = fill_prompt("SolverAgent/repair1.txt", STATEMENT=statement, PROOF=proof, ERRORS=errors)
+        return self.model.ask(prompt, thinking=True)

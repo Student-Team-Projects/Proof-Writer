@@ -9,10 +9,10 @@ Rules:
 
 
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Proof:
-{PROOF_HERE}
+PROOF_HERE
 
 Answer (JSON format), for example:
 {"correct": true, "errors": ""}
