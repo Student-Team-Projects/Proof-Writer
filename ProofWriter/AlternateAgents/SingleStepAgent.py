@@ -14,7 +14,7 @@ class SingleStepAgent:
         PROMPT_PATH = os.path.join(self.CURRENT_DIR,"../resources/SingleStepAgent/singleStepPrompt.txt")
         
         if not os.path.exists(PROMPT_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {PROMPT_PATH}")
+            raise FileNotFoundError(f"Prompt file not found: {PROMPT_PATH}")
         
         with open(PROMPT_PATH, "r", encoding="utf-8") as f:
             prompt = f.read()

@@ -11,8 +11,8 @@ class SolverAgent:
 
     def solve(self, statement: str, proof = None, errors = None):
         """
-        Wczytuje prompt solvera, podmienia 'STATEMENT_HERE'
-        i wysyła zapytanie.
+        Loads the solver prompt, substitutes 'STATEMENT_HERE'
+        and sends the request.
         """
         if proof != None:
 
@@ -21,7 +21,7 @@ class SolverAgent:
         SOLVE_PATH = os.path.join(self.CURRENT_DIR,"../resources/SolverAgent/solve1.txt")
         
         if not os.path.exists(SOLVE_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {SOLVE_PATH}")
+            raise FileNotFoundError(f"Prompt file not found: {SOLVE_PATH}")
 
         with open(SOLVE_PATH, "r", encoding="utf-8") as f:
             prompt = f.read()
@@ -35,7 +35,7 @@ class SolverAgent:
         REPAIR_PATH = os.path.join(self.CURRENT_DIR,"../resources/SolverAgent/repair1.txt")
 
         if not os.path.exists(REPAIR_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {REPAIR_PATH}")
+            raise FileNotFoundError(f"Prompt file not found: {REPAIR_PATH}")
 
         with open(REPAIR_PATH, "r", encoding="utf-8") as f:
             prompt = f.read()

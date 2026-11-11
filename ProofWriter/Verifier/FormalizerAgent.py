@@ -14,7 +14,7 @@ class FormalizerAgent:
         FORMALIZE_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgent/formalize1.txt")
 
         if not os.path.exists(FORMALIZE_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {FORMALIZE_PATH}")
+            raise FileNotFoundError(f"Prompt file not found: {FORMALIZE_PATH}")
 
         with open(FORMALIZE_PATH, "r", encoding="utf-8") as f:
             prompt = f.read()

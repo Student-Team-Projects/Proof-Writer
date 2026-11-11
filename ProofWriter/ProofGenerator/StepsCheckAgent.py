@@ -13,7 +13,7 @@ class StepsCheckAgent:
         CHECK_PATH = os.path.join(self.CURRENT_DIR,"../resources/StepsCheckAgent/check1.txt")
 
         if not os.path.exists(CHECK_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {CHECK_PATH}")
+            raise FileNotFoundError(f"Prompt file not found: {CHECK_PATH}")
 
         with open(CHECK_PATH, "r", encoding="utf-8") as f:
             prompt = f.read()

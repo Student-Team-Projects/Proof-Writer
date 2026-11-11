@@ -13,7 +13,7 @@ class TranslatorAgent:
         TRANSLATE_PATH = os.path.join(self.CURRENT_DIR,"resources/TranslatorAgent/translate1.txt")
 
         if not os.path.exists(TRANSLATE_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {TRANSLATE_PATH}")
+            raise FileNotFoundError(f"Prompt file not found: {TRANSLATE_PATH}")
 
         with open(TRANSLATE_PATH, "r", encoding="utf-8") as f:
             prompt = f.read()

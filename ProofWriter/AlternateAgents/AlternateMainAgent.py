@@ -37,14 +37,14 @@ class AlternateMainAgent:
         first_brace = cleaned.find('{')
         last_brace = cleaned.rfind('}') + 1
         if first_brace == -1 or last_brace == -1:
-            raise ValueError("Nie znaleziono JSON-a w odpowiedzi AI.")
+            raise ValueError("No JSON found in the AI response.")
 
         cleaned = cleaned[first_brace:last_brace]
 
         try:
             data = json.loads(cleaned)
         except json.JSONDecodeError as e:
-            raise ValueError(f"Niepoprawny JSON po czyszczeniu: {e}")
+            raise ValueError(f"Invalid JSON after cleanup: {e}")
 
         return data
     

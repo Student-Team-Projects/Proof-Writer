@@ -75,7 +75,7 @@ def main():
         statement = input("Enter the theorem to be proved: ").strip()
 
     # GPTModel = pw.Api.api.getModel("gpt-oss-cloud") 
-    # GPTMniejszy = pw.Api.api.getModel("gpt-oss")
+    # GPTSmall = pw.Api.api.getModel("gpt-oss")
     # DSModel = pw.Api.api.getModel("deepseek-r1")
     # DSV3Model = pw.Api.api.getModel("deepseek-v3")
     # phiModel = pw.Api.api.getModel("phi")
