@@ -3,6 +3,16 @@
 import ProofWriter.Api.api as api
 import os
 
+# Shape of the checker's answer; Ollama enforces it on the model's output.
+CHECK_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "correct": {"type": "boolean"},
+        "errors": {"type": "string"},
+    },
+    "required": ["correct", "errors"],
+}
+
 class StepsCheckAgent:
     def __init__(self, model):
         self.model = model
@@ -20,4 +30,4 @@ class StepsCheckAgent:
 
         final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof)
 
-        return self.model.ask(final_prompt, thinking=True)
+        return self.model.ask(final_prompt, thinking=True, schema=CHECK_SCHEMA)
