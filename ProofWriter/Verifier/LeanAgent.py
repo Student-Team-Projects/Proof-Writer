@@ -11,6 +11,15 @@ import uuid
 # Anything else (sorryAx, a user-declared `axiom`, ...) means the proof is not trustworthy.
 STANDARD_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
 
+def strip_code_fence(text: str) -> str:
+    text = text.strip()
+    # Fenced block: ```lean ... ```  (also ```lean4, ```Lean, or a bare ```)
+    m = re.search(r"```[\w+-]*[ \t]*\n(.*?)```", text, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    # Opening fence but no closing one (e.g. truncated model output)
+    text = re.sub(r"^```[\w+-]*[ \t]*\n", "", text)
+    return text.strip()
 
 class LeanAgent:
     def __init__(self, project="lean_workspace", timeout=120):
@@ -23,6 +32,15 @@ class LeanAgent:
         self.project = os.path.join(self.CURRENT_DIR, project)
         self.scratch = os.path.join(self.project, "scratch")
         self.timeout = timeout
+        has_lakefile = any(
+            os.path.exists(os.path.join(self.project, f))
+            for f in ("lakefile.toml", "lakefile.lean")
+        )
+        if not has_lakefile:
+            raise FileNotFoundError(
+                f"No Lake project found in {self.project}. "
+                f"Create it with: lake new {os.path.basename(self.project)} math"
+            )
         os.makedirs(self.scratch, exist_ok=True)
 
     def _run_lean(self, path):
@@ -64,6 +82,12 @@ class LeanAgent:
         return f"{pos.get('line', '?')}:{pos.get('column', '?')}: {msg.get('data', '').strip()}"
 
     def check(self, proof_string: str, theorem_name: str = None):
+        if proof_string == "":
+            return {"ok" : False, "errors" : ["no proof was provided"] }
+
+        proof_string = strip_code_fence(proof_string)
+        source = proof_string
+        
         """
         proof_string: a complete .lean file (including `import Mathlib` etc. at the top).
         theorem_name: if given, also verifies which axioms the theorem depends on,
