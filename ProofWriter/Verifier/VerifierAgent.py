@@ -25,7 +25,7 @@ class VerifierAgent:
                 logging.info("succes")
                 return True, formal_proof
             logging.info(f"{attempt+1}formal solution is incorrect")
-        logging.info("Neume")
+        logging.info("formal verification failed in all attempts")
         return False, None
 
 

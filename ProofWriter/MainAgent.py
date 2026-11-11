@@ -29,7 +29,7 @@ class MainAgent:
                 logging.info(f"Attempt {na + 1} start")
                 
                 proof = self.generatorAgent.generate(statement)
-                if proof == "Neume":
+                if proof is None:
                     continue
                 
                 best_proof = proof

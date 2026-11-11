@@ -32,7 +32,7 @@ class ProofGeneratorAgent:
             logging.info(f"{2+attempt} attempt at solutions")
             proof = self.solverAgent.solve(statement,proof,errorsJson['errors'])
             logging.debug(proof)
-        return "Neume"
+        return None
 
 
 
