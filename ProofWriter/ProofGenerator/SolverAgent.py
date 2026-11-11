@@ -16,7 +16,7 @@ class SolverAgent:
         """
         if proof != None:
 
-            return self.repair(statement,proof,"")
+            return self.repair(statement,proof,errors)
         
         SOLVE_PATH = os.path.join(self.CURRENT_DIR,"../resources/SolverAgent/solve1.txt")
         
