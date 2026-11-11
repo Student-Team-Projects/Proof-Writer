@@ -17,7 +17,7 @@ class FormalizerAgentWithRandomExamples:
     def formalize(self, statement: str, proof: str):
         examples = get_examples_string(self.requirements, EXAMPLES_PATH)
         prompt = fill_prompt("FormalizerAgentWithRandomExamples/formalize1.txt", STATEMENT=statement, PROOF=proof, EXAMPLES=examples)
-        logging.info(prompt)
+        logging.debug(prompt)
         return self.model.ask(prompt, thinking=True)
 
 
