@@ -43,12 +43,12 @@ You **MUST** strictly adhere to the following Universal Formalization Rules:
 
 ### IV. PROOF STYLE
 1.  **Structure:** Always use the structured tactic style with `by` and `calc`:
-    ```lean
+    
     theorem name (hypotheses) : term1 = term3 := by
       calc term1
           = term2 := by rw [rule_name]
         _ = term3 := by rw [other_rule]
-    ```
+    
     Use `have name : statement := by ...` for intermediate facts. Indent consistently with 2 spaces.
 2.  **Witnesses:** When using an existential hypothesis, destructure it immediately with `obtain ⟨w, hw⟩ := h`. When proving an existence goal, supply the witness with `refine ⟨w, ?_⟩`.
 3.  **Simplicity:** Prefer `simp`, `rw`, `exact`, `omega`, `linarith`, `ring`, `norm_num`, or `constructor`/`intro` for standard steps. Avoid obscure tactics unless necessary.
@@ -80,7 +80,7 @@ Respond **ONLY** with the raw Lean 4 code block.
 
 --- PERSONALIZED EXAMPLES TO FOLLOW ---
 Example 1:
-```lean
+
 import Mathlib
 
 theorem square_of_product {G : Type} (mult : G -> G -> G)
@@ -94,10 +94,10 @@ theorem square_of_product {G : Type} (mult : G -> G -> G)
     _ = mult a (mult (mult a b) b) := by rw [comm b a]
     _ = mult a (mult a (mult b b)) := by rw [assoc a b b]
     _ = mult (mult a a) (mult b b) := by rw [assoc a a (mult b b)]
-```
+
 
 Example 2:
-```lean
+
 import Mathlib
 
 theorem double_negation (P : Prop) : Not (Not P) <-> P := by
@@ -112,10 +112,10 @@ def add_one (x : Nat) : Nat := x + 1
 theorem add_one_gt_zero (x : Nat) : add_one x > 0 := by
   unfold add_one
   omega
-```
+
 
 Example 3:
-```lean
+
 import Mathlib
 
 theorem sqrt_sum_lt : Real.sqrt 2 + Real.sqrt 3 < Real.sqrt 10 := by
@@ -133,9 +133,9 @@ theorem sqrt_sum_lt : Real.sqrt 2 + Real.sqrt 3 < Real.sqrt 10 := by
     nlinarith [hc, hx, h6]
   rw [Real.lt_sqrt (by positivity)]
   nlinarith [h2, h3, hprod]
-```
+
 Example 4:
-```lean
+
 import Mathlib
 
 theorem sum_of_two_evens_is_even (a b : Int) (ha : Even a) (hb : Even b) :
@@ -145,9 +145,9 @@ theorem sum_of_two_evens_is_even (a b : Int) (ha : Even a) (hb : Even b) :
   refine ⟨k + l, ?_⟩
   rw [hk, hl]
   ring
-```
+
 Example 5:
-```lean
+
 import Mathlib
 
 theorem divides_linear_combination (a b c m n : Int)
@@ -160,10 +160,10 @@ theorem divides_linear_combination (a b c m n : Int)
     ring
   rw [h]
   exact Dvd.intro _ rfl
-```
+
 
 Example 6:
-```lean
+
 import Mathlib
 
 theorem inverse_of_inverse {G : Type} (mult : G -> G -> G) (inv : G -> G)
@@ -180,7 +180,7 @@ theorem inverse_of_inverse {G : Type} (mult : G -> G -> G) (inv : G -> G)
     _ = mult a (mult (inv a) (inv (inv a))) := assoc a (inv a) (inv (inv a))
     _ = mult a e := by rw [right_inv (inv a)]
     _ = a := right_id a
-```
+
 --- END OF EXAMPLES ---
 
 NOW, TRANSLATE THE FOLLOWING TEXT INTO LEAN 4.
