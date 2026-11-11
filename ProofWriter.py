@@ -18,8 +18,8 @@ def main():
     parser.add_argument("--host", type=str, default="http://localhost:11434", help="Ollama server address")
     parser.add_argument("--log", choices=["debug", "info"], type=str, help="Logging level: debug or info")
 
-    models = ["gemma3:270m"]
-    default_model = "gemma3:270m"
+    models = ["gemma4"]
+    default_model = "gemma4"
     parser.add_argument("--steps_checker_model", choices=models, default=default_model, help="Model to use for steps checker agent")
     parser.add_argument("--solver_model", choices=models, default=default_model, help="Model to use for solver agent")
     parser.add_argument("--translator_model", choices=models, default=default_model, help="Model to use for translator agent")
@@ -85,10 +85,11 @@ def main():
     solverAgent = pw.ProofGenerator.SolverAgent.SolverAgent(solver_model)
     stepsChecker = pw.ProofGenerator.StepsCheckAgent.StepsCheckAgent(steps_checker_model)
     generatorAgent = pw.ProofGenerator.ProofGeneratorAgent.ProofGeneratorAgent(solverAgent,stepsChecker,generator_attempts)
-    formalizerAgent = pw.Verifier.FormalizerAgentWithRandomExamples.FormalizerAgentWithRandomExamples(formalizer_model,examples)
-    # formalizerAgent = pw.Verifier.FormalizerAgent.FormalizerAgent(formalizer_model)
-    isabelleAgent = pw.Verifier.IsabelleAgent.IsabelleAgent()
-    verifierAgent = pw.Verifier.VerifierAgent.VerifierAgent(formalizerAgent,isabelleAgent,verifier_attempts)
+    # formalizerAgent = pw.Verifier.FormalizerAgentWithRandomExamples.FormalizerAgentWithRandomExamples(formalizer_model,examples)
+    formalizerAgent = pw.Verifier.FormalizerAgent.FormalizerAgent(formalizer_model)
+    # isabelleAgent = pw.Verifier.IsabelleAgent.IsabelleAgent()
+    leanAgent = pw.Verifier.LeanAgent.LeanAgent()
+    verifierAgent = pw.Verifier.VerifierAgent.VerifierAgent(formalizerAgent,leanAgent,verifier_attempts)
     translatorAgent = pw.TranslatorAgent.TranslatorAgent(translator_model)
 
     model = pw.MainAgent.MainAgent(generatorAgent,verifierAgent,translatorAgent,main_attempts)

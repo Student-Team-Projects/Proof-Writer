@@ -7,7 +7,7 @@ import ProofWriter.ProofGenerator.StepsCheckAgent as stc
 import ProofWriter.ProofGenerator.ProofGeneratorAgent as gen
 import ProofWriter.TranslatorAgent as tra
 import ProofWriter.Verifier.FormalizerAgent as form
-import ProofWriter.Verifier.IsabelleAgent as isa
+import ProofWriter.Verifier.LeanAgent as la
 import ProofWriter.Verifier.VerifierAgent as ver
 import ProofWriter.Api.api as api 
 from ProofWriter.Tools.JsonExtractor import *

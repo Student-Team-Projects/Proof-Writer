@@ -7,19 +7,19 @@ import json
 import logging
 class VerifierAgent:
 
-    def __init__(self, formalizer, isabelle, n_attempts = 5):
+    def __init__(self, formalizer, lean, n_attempts = 5):
         self.formalizerAgent = formalizer
-        self.isabelleAgent = isabelle
+        self.leanAgent = lean
         self.n_attempts = n_attempts
 
     def verify(self,statement, proof):
-        # print(proof)
+        logging.debug(proof)
         for attempt in range(self.n_attempts):
             logging.info(f"{attempt+1} attempt at formalize")
             formal_proof = self.formalizerAgent.formalize(statement,proof)
             logging.debug(formal_proof)
             logging.info(f"check {attempt+1} formal solution")
-            verify = self.isabelleAgent.check(formal_proof)
+            verify = self.leanAgent.check(formal_proof)
             logging.debug(verify)
             if verify['ok'] == True:
                 logging.info("succes")
