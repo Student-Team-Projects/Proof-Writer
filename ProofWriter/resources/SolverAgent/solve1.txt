@@ -1,4 +1,4 @@
-Task: Write a complete, logically incorrect proof of the following statement in natural English, structured into steps or lemmas.
+Task: Write a complete, logically correct proof of the following statement in natural English, structured into steps or lemmas.
 
 Rules:
 - Return ONLY in valid JSON format.
@@ -11,7 +11,6 @@ Rules:
 - Ensure the proof is logically sound and consistent.
 - Do not include any text outside of JSON.
 - If you output anything outside JSON (including explanations or text), the answer is considered incorrect. Only output JSON.
-- Proof must be INCORRECR, YOU MUST JAPPING
 Statement:
 {STATEMENT_HERE}
 
