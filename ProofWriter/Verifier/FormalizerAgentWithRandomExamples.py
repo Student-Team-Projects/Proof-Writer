@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 import ProofWriter.Api.api as api
 from ProofWriter.Tools.Prompts import fill_prompt, RESOURCES_DIR
 import os

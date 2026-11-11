@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-
-
-
 import ProofWriter.ProofGenerator.SolverAgent as sol
 import ProofWriter.ProofGenerator.StepsCheckAgent as stc
 import ProofWriter.ProofGenerator.ProofGeneratorAgent as gen

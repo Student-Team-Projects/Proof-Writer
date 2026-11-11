@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 import ProofWriter.Api.api as api
 import ProofWriter as pw
 import os

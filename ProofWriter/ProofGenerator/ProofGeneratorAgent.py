@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-
-
-
 from ProofWriter.Tools.JsonExtractor import *
 import json
 import logging
