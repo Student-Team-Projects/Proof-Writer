@@ -30,9 +30,11 @@ class Model:
         self.model_name = model_name
         self.session = session
 
-    def ask(self, prompt, thinking = True, timeout = 60):
+    def ask(self, prompt, thinking = True, timeout = 60, schema = None):
         """
         Sends prompt to the model and waits for the response.
+        If schema (a JSON schema dict) is given, Ollama constrains the
+        response to valid JSON matching it.
         """
         url = self.session.host.rstrip("/") + "/api/generate"
         body = {
@@ -41,6 +43,8 @@ class Model:
             "stream": False,
             "thinking": thinking
         }
+        if schema is not None:
+            body["format"] = schema
         resp = requests.post(url, json=body, timeout=timeout)
         resp.raise_for_status()
         data = resp.json()

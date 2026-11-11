@@ -2,25 +2,19 @@ Task: Check each step in proof below.
 
 Rules:
 - Return ONLY in valid JSON format.
-- The field "correct" must be a boolean value: "true" if proof is correct or "false" in other way,
-- If "correct" is false, fill in the "errors" field as a single text string describing the mistakes. Do not use arrays or objects inside "errors".
+- The field "correct" must be a boolean: true if the proof is correct, false otherwise.
+- The field "errors" must be a single text string describing the mistakes, or an empty string "" if the proof is correct. Do not use arrays or objects inside "errors".
 - DO NOT include any text outside of JSON.
 - If you output anything outside JSON (including explanations or text), the answer is considered incorrect. Only output JSON.
 
 
 Statement:
-{STATEMENT_HERE}
+STATEMENT_HERE
 
 Proof:
-{PROOF_HERE}
+PROOF_HERE
 
-Answer (JSON format):
-{
-  "correct": "..."
-  "errors": [
-    {
-      "step_id": 1,
-      "errors": "..."
-    }
-  ]
-}
+Answer (JSON format), for example:
+{"correct": true, "errors": ""}
+or
+{"correct": false, "errors": "Step 2: ... Step 4: ..."}

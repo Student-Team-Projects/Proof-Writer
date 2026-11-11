@@ -53,8 +53,10 @@ def main():
 
     if input_path and not os.path.exists(input_path):
         raise FileNotFoundError(f"File not found: {input_path}")
-    if output_path and not os.path.exists(output_path):
-        raise FileNotFoundError(f"File not found: {output_path}")
+    if output_path:
+        output_dir = os.path.dirname(os.path.abspath(output_path))
+        if not os.path.isdir(output_dir):
+            raise FileNotFoundError(f"Output directory not found: {output_dir}")
     
     if log == "info":
         logging.basicConfig(level=logging.INFO)
@@ -75,7 +77,7 @@ def main():
         statement = input("Enter the theorem to be proved: ").strip()
 
     # GPTModel = pw.Api.api.getModel("gpt-oss-cloud") 
-    # GPTMniejszy = pw.Api.api.getModel("gpt-oss")
+    # GPTSmall = pw.Api.api.getModel("gpt-oss")
     # DSModel = pw.Api.api.getModel("deepseek-r1")
     # DSV3Model = pw.Api.api.getModel("deepseek-v3")
     # phiModel = pw.Api.api.getModel("phi")

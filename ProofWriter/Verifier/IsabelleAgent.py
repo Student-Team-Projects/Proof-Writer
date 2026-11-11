@@ -13,19 +13,19 @@ class IsabelleAgent:
         self.workspace = os.path.join(self.CURRENT_DIR,workspace)
 
     def _reset_workspace(self):
-        # Usuwamy stary workspace
+        # Remove the old workspace
         if os.path.exists(self.workspace):
             shutil.rmtree(self.workspace)
 
-        # Tworzymy pusty
+        # Create an empty one
         os.makedirs(self.workspace)
 
     def _write_files(self, theory_name, content):
-        # Zapis .thy
+        # Write the .thy file
         with open(f"{self.workspace}/{theory_name}.thy", "w") as f:
             f.write(content)
 
-        # Zapis ROOT
+        # Write the ROOT file
         with open(f"{self.workspace}/ROOT", "w") as f:
             f.write(
                 f"session {theory_name} = HOL +\n"
@@ -41,7 +41,7 @@ class IsabelleAgent:
             text=True
         )
 
-        # Wyłuskanie błędów
+        # Extract the error lines
         error_pattern = re.compile(r"\*\*\*|Error|error|FAILED|Undefined|Unknown|Malformed", re.IGNORECASE)
         all_output = result.stdout.splitlines() + result.stderr.splitlines()
         errors = [line for line in all_output if error_pattern.search(line)]
@@ -51,13 +51,13 @@ class IsabelleAgent:
 
     def check(self, proof_string: str):
         """
-        Zwraca:
+        Returns:
             { "ok": True }
-            lub
+            or
             { "ok": False, "errors": [...] }
         """
 
-        # Czyścimy workspace przed użyciem
+        # Clear the workspace before use
         self._reset_workspace()
 
         # theory_name = f"Auto_{uuid.uuid4().hex[:8]}"

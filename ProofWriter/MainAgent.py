@@ -29,7 +29,7 @@ class MainAgent:
                 logging.info(f"Attempt {na + 1} start")
                 
                 proof = self.generatorAgent.generate(statement)
-                if proof == "Neume":
+                if proof is None:
                     continue
                 
                 best_proof = proof
@@ -53,11 +53,11 @@ class MainAgent:
 
             try:
                 logging.info("Translate to natural language")
-                translate_proof = self.translatorAgent.translate(statement, proof)
+                translate_proof = self.translatorAgent.translate(statement, best_proof)
                 logging.debug(translate_proof)
                 return translate_proof, formal_success
             except Exception as e:
                 logging.error(f"Error during attempt {na + 1}: {e}")
-        return proof, formal_success
+        return best_proof, formal_success
 
         

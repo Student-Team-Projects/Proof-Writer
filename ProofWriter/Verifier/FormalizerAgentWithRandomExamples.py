@@ -2,64 +2,56 @@
 
 
 import ProofWriter.Api.api as api
+from ProofWriter.Tools.Prompts import fill_prompt, RESOURCES_DIR
 import os
 import random
 import logging
 
+EXAMPLES_PATH = str(RESOURCES_DIR / "FormalizerAgentWithRandomExamples" / "Examples")
+
 class FormalizerAgentWithRandomExamples:
     def __init__(self, model: api.Model, requirements: dict):
         self.model = model
-        self.CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.requirements = requirements
 
     def formalize(self, statement: str, proof: str):
-        x = "FormalizerAgentWithRandomExamples"
-
-        FORMALIZE_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgentWithRandomExamples/formalize1.txt")
-        EXAMPLES_PATH = os.path.join(self.CURRENT_DIR,"../resources/FormalizerAgentWithRandomExamples/Examples")
-
-        if not os.path.exists(FORMALIZE_PATH):
-            raise FileNotFoundError(f"Brak pliku promptu: {FORMALIZE_PATH}")
-
-        with open(FORMALIZE_PATH, "r", encoding="utf-8") as f:
-            prompt = f.read()
-
-        final_prompt = prompt.replace("STATEMENT_HERE", statement).replace("PROOF_HERE", proof).replace("EXAMPLES_HERE", get_examples_string(self.requirements, EXAMPLES_PATH))
-        logging.info(final_prompt)
-        return self.model.ask(final_prompt, thinking=True)
+        examples = get_examples_string(self.requirements, EXAMPLES_PATH)
+        prompt = fill_prompt("FormalizerAgentWithRandomExamples/formalize1.txt", STATEMENT=statement, PROOF=proof, EXAMPLES=examples)
+        logging.debug(prompt)
+        return self.model.ask(prompt, thinking=True)
 
 
 def get_examples_string(requirements: dict, base_path: str = "examples") -> str:
     """
-    Pobiera losowe przykłady z folderów na podstawie mapy wymagań.
-    
+    Picks random examples from folders based on a requirements map.
+
     Args:
-        requirements (dict): Mapa {źródło: ilość}, np. {"historia": 2, "all": 3}
-        base_path (str): Ścieżka do głównego folderu z przykładami.
-        
+        requirements (dict): Map {source: count}, e.g. {"domain_specific/algebra": 2, "all": 3}
+        base_path (str): Path to the main examples folder.
+
     Returns:
-        str: Sformatowany ciąg tekstowy z przykładami.
+        str: Formatted string containing the examples.
     """
     selected_file_paths = []
-    
-    # Sprawdzenie czy folder główny istnieje
-    if not os.path.exists(base_path):
-        return f"Błąd: Folder '{base_path}' nie istnieje."
 
-    # Iteracja po wymaganiach
+    # Check that the main folder exists
+    if not os.path.exists(base_path):
+        return f"Error: Folder '{base_path}' does not exist."
+
+    # Iterate over the requirements
     for source, count in requirements.items():
         current_pool = []
         
         if source == "all":
-            # 1. Pobierz pliki ze WSZYSTKICH podfolderów w 'examples'
+            # 1. Collect files from ALL subfolders of 'examples'
             for root, dirs, files in os.walk(base_path):
-                # Pomijamy pliki w samym folderze głównym, interesują nas podfoldery
+                # Skip files in the main folder itself; we only want subfolders
                 if root == base_path:
                     continue
                 for file in files:
                     current_pool.append(os.path.join(root, file))
         else:
-            # 2. Pobierz pliki z KONKRETNEGO folderu
+            # 2. Collect files from ONE specific folder
             target_folder = os.path.join(base_path, source)
             if os.path.exists(target_folder) and os.path.isdir(target_folder):
                 current_pool = [
@@ -68,16 +60,16 @@ def get_examples_string(requirements: dict, base_path: str = "examples") -> str:
                     if os.path.isfile(os.path.join(target_folder, f))
                 ]
             else:
-                print(f"Ostrzeżenie: Źródło '{source}' nie istnieje w {base_path}")
+                print(f"Warning: Source '{source}' does not exist in {base_path}")
                 continue
 
-        # Losowanie plików (zabezpieczenie przed żądaniem większej liczby niż dostępna)
+        # Sample files at random (capped so we never request more than are available)
         k = min(count, len(current_pool))
         if k > 0:
             selected_files = random.sample(current_pool, k)
             selected_file_paths.extend(selected_files)
 
-    # Budowanie wynikowego stringa
+    # Build the output string
     output_parts = []
     
     for i, file_path in enumerate(selected_file_paths, 1):
@@ -85,11 +77,11 @@ def get_examples_string(requirements: dict, base_path: str = "examples") -> str:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
                 
-            # Formatowanie pojedynczego bloku
+            # Format a single block
             block = f"Example {i}\n\n{content}"
             output_parts.append(block)
         except Exception as e:
-            output_parts.append(f"Example {i}\n\n[Błąd odczytu pliku: {file_path}]")
+            output_parts.append(f"Example {i}\n\n[Error reading file: {file_path}]")
 
-    # Łączenie bloków podwójną nową linią (lub pojedynczą, zależnie od preferencji odstępów)
+    # Join the blocks with a blank line (or a single newline, depending on spacing preference)
     return "\n\n".join(output_parts)
